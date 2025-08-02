@@ -9,7 +9,7 @@
 
 ## 🎮 デモ
 
-[ライブデモはこちら](#) <!-- GitHubPagesのURLに置き換えてください -->
+[ライブデモはこちら](#) <https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/>
 
 ## 📝 概要
 
