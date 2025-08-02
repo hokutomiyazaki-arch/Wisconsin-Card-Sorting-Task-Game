@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ウィスコンシンカードソーティングタスク</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 10px;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .timer-score {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .timer, .score {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .timer {
+            color: #ffd700;
+        }
+
+        .instructions {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+            line-height: 1.4;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .target-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 400px) {
+            .target-cards {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.highlight-correct {
+            border: 3px solid #4ade80;
+            animation: pulse-correct 0.5s ease-in-out;
+        }
+
+        .card.highlight-incorrect {
+            border: 3px solid #f87171;
+            animation: pulse-incorrect 0.5s ease-in-out;
+        }
+
+        @keyframes pulse-correct {
+            0% { transform: scale(1); background: white; }
+            50% { transform: scale(1.05); background: #d1fae5; }
+            100% { transform: scale(1); background: white; }
+        }
+
+        @keyframes pulse-incorrect {
+            0% { transform: scale(1); background: white; }
+            50% { transform: scale(1.05); background: #fee2e2; }
+            100% { transform: scale(1); background: white; }
+        }
+
+        .shape {
+            font-size: 25px;
+            margin: 2px;
+            line-height: 1;
+        }
+
+        .test-card-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .test-card {
+            background: white;
+            border: 3px solid #333;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            min-width: 120px;
+            min-height: 100px;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            height: 25px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .correct {
+            color: #4ade80;
+        }
+
+        .incorrect {
+            color: #f87171;
+        }
+
+        .point-change {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            animation: float-up 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+        }
+
+        button {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .game-over {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .final-score {
+            font-size: 36px;
+            color: #ffd700;
+            margin: 10px 0;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .start-screen h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .start-screen p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="startScreen" class="start-screen">
+            <h2>カードソーティングゲーム</h2>
+            <p>
+                5分間のタイムアタック！<br>
+                正解で+1点、不正解で-1点<br>
+                ルールは予告なく変わります<br>
+                フィードバックを見て適応してください
+            </p>
+            <button onclick="startGame()">ゲームスタート</button>
+        </div>
+
+        <div id="gameScreen" style="display: none;">
+            <h1>カードソーティングゲーム</h1>
+            
+            <div class="timer-score">
+                <div class="timer">残り時間: <span id="timeLeft">5:00</span></div>
+                <div class="score">スコア: <span id="score">0</span></div>
+            </div>
+
+            <div class="instructions">
+                下のカードを上のカードのいずれかにマッチさせてください
+            </div>
+
+            <div class="target-cards" id="targetCards"></div>
+            
+            <div class="test-card-container">
+                <div class="card test-card" id="testCard"></div>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div id="gameOver" style="display: none;">
+            <div class="game-over">
+                <h2>ゲーム終了！</h2>
+                <div class="final-score" id="finalScore">0</div>
+                <div>点</div>
+                <div style="margin-top: 10px; font-size: 14px;">
+                    正解数: <span id="correctCount">0</span><br>
+                    不正解数: <span id="incorrectCount">0</span>
+                </div>
+            </div>
+            <button onclick="resetGame()">もう一度プレイ</button>
+        </div>
+    </div>
+
+    <script>
+        // カードの属性
+        const colors = ['red', 'green', 'blue', 'yellow'];
+        const shapes = ['●', '★', '▲', '■'];
+        const numbers = [1, 2, 3, 4];
+
+        // ゲームの状態
+        let currentRule = 'color';
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let gameTimer = null;
+        let timeLeft = 300; // 5分 = 300秒
+        let nextRuleChange = 0;
+        let correctInCurrentRule = 0;
+
+        // ターゲットカード（固定）
+        const targetCards = [
+            { color: 'red', shape: '▲', number: 1 },
+            { color: 'green', shape: '★', number: 2 },
+            { color: 'yellow', shape: '●', number: 3 },
+            { color: 'blue', shape: '■', number: 4 }
+        ];
+
+        // カードを表示する関数
+        function displayCard(card, element) {
+            element.innerHTML = '';
+            for (let i = 0; i < card.number; i++) {
+                const shape = document.createElement('span');
+                shape.className = 'shape';
+                shape.textContent = card.shape;
+                shape.style.color = card.color;
+                element.appendChild(shape);
+            }
+        }
+
+        // ターゲットカードを初期化
+        function initTargetCards() {
+            const container = document.getElementById('targetCards');
+            container.innerHTML = '';
+            
+            targetCards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.onclick = () => selectCard(index);
+                displayCard(card, cardElement);
+                container.appendChild(cardElement);
+            });
+        }
+
+        // ランダムなテストカードを生成
+        function generateTestCard() {
+            return {
+                color: colors[Math.floor(Math.random() * colors.length)],
+                shape: shapes[Math.floor(Math.random() * shapes.length)],
+                number: numbers[Math.floor(Math.random() * numbers.length)]
+            };
+        }
+
+        // 新しいテストカードを表示
+        function showNewTestCard() {
+            const testCard = generateTestCard();
+            const element = document.getElementById('testCard');
+            displayCard(testCard, element);
+            element.dataset.card = JSON.stringify(testCard);
+        }
+
+        // ポイント変化のアニメーション
+        function showPointChange(element, points) {
+            const pointDiv = document.createElement('div');
+            pointDiv.className = 'point-change';
+            pointDiv.textContent = points > 0 ? `+${points}` : points;
+            pointDiv.style.color = points > 0 ? '#4ade80' : '#f87171';
+            pointDiv.style.left = '50%';
+            pointDiv.style.top = '50%';
+            pointDiv.style.transform = 'translate(-50%, -50%)';
+            element.appendChild(pointDiv);
+            
+            setTimeout(() => pointDiv.remove(), 1000);
+        }
+
+        // カードが選択されたときの処理
+        function selectCard(index) {
+            const testCard = JSON.parse(document.getElementById('testCard').dataset.card);
+            const targetCard = targetCards[index];
+            
+            let isCorrect = false;
+            
+            // 現在のルールに基づいて正誤判定
+            switch (currentRule) {
+                case 'color':
+                    isCorrect = testCard.color === targetCard.color;
+                    break;
+                case 'shape':
+                    isCorrect = testCard.shape === targetCard.shape;
+                    break;
+                case 'number':
+                    isCorrect = testCard.number === targetCard.number;
+                    break;
+            }
+            
+            // フィードバック表示とスコア更新
+            const feedback = document.getElementById('feedback');
+            const cards = document.querySelectorAll('.target-cards .card');
+            
+            if (isCorrect) {
+                feedback.textContent = '正解！';
+                feedback.className = 'feedback correct';
+                score++;
+                correctCount++;
+                correctInCurrentRule++;
+                cards[index].classList.add('highlight-correct');
+                showPointChange(cards[index], 1);
+            } else {
+                feedback.textContent = '不正解';
+                feedback.className = 'feedback incorrect';
+                score--;
+                incorrectCount++;
+                cards[index].classList.add('highlight-incorrect');
+                showPointChange(cards[index], -1);
+            }
+            
+            updateScore();
+            
+            // ハイライトを削除
+            setTimeout(() => {
+                cards[index].classList.remove('highlight-correct', 'highlight-incorrect');
+            }, 500);
+            
+            // ルール変更のチェック
+            if (correctInCurrentRule >= nextRuleChange) {
+                changeRule();
+            }
+            
+            setTimeout(() => {
+                feedback.textContent = '';
+                showNewTestCard();
+            }, 800);
+        }
+
+        // ルールを変更
+        function changeRule() {
+            const rules = ['color', 'shape', 'number'];
+            const lastRule = currentRule;
+            do {
+                currentRule = rules[Math.floor(Math.random() * rules.length)];
+            } while (currentRule === lastRule);
+            
+            // 次のルール変更までの正解数をランダムに設定（5〜15回）
+            nextRuleChange = Math.floor(Math.random() * 11) + 5;
+            correctInCurrentRule = 0;
+        }
+
+        // スコアを更新
+        function updateScore() {
+            document.getElementById('score').textContent = score;
+        }
+
+        // タイマーを更新
+        function updateTimer() {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timeLeft').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        // ゲーム開始
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            
+            // 初期化
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            timeLeft = 300;
+            currentRule = 'color';
+            nextRuleChange = Math.floor(Math.random() * 11) + 5;
+            correctInCurrentRule = 0;
+            
+            updateScore();
+            initTargetCards();
+            showNewTestCard();
+            
+            // タイマー開始
+            gameTimer = setInterval(updateTimer, 1000);
+        }
+
+        // ゲーム終了
+        function endGame() {
+            clearInterval(gameTimer);
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('incorrectCount').textContent = incorrectCount;
+        }
+
+        // ゲームリセット
+        function resetGame() {
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
