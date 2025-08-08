@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>ウィスコンシンカードソーティングタスク</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -20,6 +25,7 @@
             align-items: center;
             color: white;
             padding: 10px;
+            overflow-x: hidden;
         }
 
         .container {
@@ -30,6 +36,10 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         h1 {
@@ -189,7 +199,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: block;
-            margin: 0 auto;
+            margin: 10px auto;
             width: 100%;
             max-width: 200px;
         }
@@ -197,6 +207,32 @@
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .time-option {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .time-option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .time-option.selected {
+            background: linear-gradient(45deg, #4ade80, #22c55e);
+            transform: scale(1.05);
         }
 
         .game-over {
@@ -231,18 +267,94 @@
             line-height: 1.5;
             opacity: 0.9;
         }
+
+        .high-scores {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .high-scores h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .score-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .congratulations {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            animation: celebration 0.5s ease-in-out;
+        }
+
+        @keyframes celebration {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        input[type="text"] {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+        
         <div id="startScreen" class="start-screen">
             <h2>カードソーティングゲーム</h2>
             <p>
-                5分間のタイムアタック！<br>
                 正解で+1点、不正解で-1点<br>
                 ルールは予告なく変わります<br>
                 フィードバックを見て適応してください
             </p>
+            
+            <h3>トレーニング時間を選択</h3>
+            <div class="time-selector">
+                <div class="time-option" onclick="selectTime(30)">30秒</div>
+                <div class="time-option" onclick="selectTime(60)">1分</div>
+                <div class="time-option" onclick="selectTime(180)">3分</div>
+                <div class="time-option selected" onclick="selectTime(300)">5分</div>
+            </div>
+            
+            <div class="high-scores" id="highScoresStart">
+                <h3>ハイスコア</h3>
+                <div id="scoreListStart"></div>
+            </div>
+            
             <button onclick="startGame()">ゲームスタート</button>
         </div>
 
@@ -256,6 +368,9 @@
 
             <div class="instructions">
                 下のカードを上のカードのいずれかにマッチさせてください
+                <button onclick="toggleSound()" style="background: rgba(255,255,255,0.2); padding: 5px 15px; margin-left: 10px; font-size: 12px;">
+                    <span id="soundToggle">🔊</span>
+                </button>
             </div>
 
             <div class="target-cards" id="targetCards"></div>
@@ -268,6 +383,10 @@
         </div>
 
         <div id="gameOver" style="display: none;">
+            <div id="congratsMessage" style="display: none;" class="congratulations">
+                🎉 Congratulations! Best Score! 🎉
+            </div>
+            
             <div class="game-over">
                 <h2>ゲーム終了！</h2>
                 <div class="final-score" id="finalScore">0</div>
@@ -276,7 +395,19 @@
                     正解数: <span id="correctCount">0</span><br>
                     不正解数: <span id="incorrectCount">0</span>
                 </div>
+                
+                <div id="nameInput" style="display: none; margin-top: 20px;">
+                    <p>ハイスコア更新！名前を入力してください：</p>
+                    <input type="text" id="playerName" placeholder="名前を入力" maxlength="20">
+                    <button onclick="saveHighScore()">保存</button>
+                </div>
             </div>
+            
+            <div class="high-scores">
+                <h3>ハイスコア</h3>
+                <div id="scoreListEnd"></div>
+            </div>
+            
             <button onclick="resetGame()">もう一度プレイ</button>
         </div>
     </div>
@@ -293,9 +424,104 @@
         let correctCount = 0;
         let incorrectCount = 0;
         let gameTimer = null;
-        let timeLeft = 300; // 5分 = 300秒
+        let selectedTime = 300;
+        let timeLeft = 300;
         let nextRuleChange = 0;
         let correctInCurrentRule = 0;
+
+        // 音声の初期化
+        let audioContext = null;
+        let isSoundEnabled = true;
+
+        // ハイスコアデータ
+        let highScores = {};
+
+        // ローカルストレージからハイスコアを読み込み
+        function loadHighScores() {
+            const saved = localStorage.getItem('wcstHighScores');
+            if (saved) {
+                highScores = JSON.parse(saved);
+            } else {
+                highScores = {
+                    30: { name: '-', score: 0 },
+                    60: { name: '-', score: 0 },
+                    180: { name: '-', score: 0 },
+                    300: { name: '-', score: 0 }
+                };
+            }
+        }
+
+        // ハイスコアを保存
+        function saveHighScores() {
+            localStorage.setItem('wcstHighScores', JSON.stringify(highScores));
+        }
+
+        // ハイスコア表示
+        function displayHighScores(elementId) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            
+            const times = [30, 60, 180, 300];
+            const labels = ['30秒', '1分', '3分', '5分'];
+            
+            times.forEach((time, index) => {
+                const entry = document.createElement('div');
+                entry.className = 'score-entry';
+                const scoreData = highScores[time] || { name: '-', score: 0 };
+                entry.innerHTML = `
+                    <span>${labels[index]}</span>
+                    <span>${scoreData.name}: ${scoreData.score}点</span>
+                `;
+                container.appendChild(entry);
+            });
+        }
+
+        // Web Audio APIで音を生成
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // 正解音（高い音）
+        function playCorrectSound() {
+            if (!isSoundEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // 不正解音（低い音）
+        function playIncorrectSound() {
+            if (!isSoundEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
 
         // ターゲットカード（固定）
         const targetCards = [
@@ -304,6 +530,14 @@
             { color: 'yellow', shape: '●', number: 3 },
             { color: 'blue', shape: '■', number: 4 }
         ];
+
+        // 時間選択
+        function selectTime(seconds) {
+            selectedTime = seconds;
+            const options = document.querySelectorAll('.time-option');
+            options.forEach(option => option.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
 
         // カードを表示する関数
         function displayCard(card, element) {
@@ -394,6 +628,7 @@
                 correctInCurrentRule++;
                 cards[index].classList.add('highlight-correct');
                 showPointChange(cards[index], 1);
+                playCorrectSound();
             } else {
                 feedback.textContent = '不正解';
                 feedback.className = 'feedback incorrect';
@@ -401,6 +636,7 @@
                 incorrectCount++;
                 cards[index].classList.add('highlight-incorrect');
                 showPointChange(cards[index], -1);
+                playIncorrectSound();
             }
             
             updateScore();
@@ -457,11 +693,14 @@
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             
+            // 音声の初期化
+            initAudio();
+            
             // 初期化
             score = 0;
             correctCount = 0;
             incorrectCount = 0;
-            timeLeft = 300;
+            timeLeft = selectedTime;
             currentRule = 'color';
             nextRuleChange = Math.floor(Math.random() * 11) + 5;
             correctInCurrentRule = 0;
@@ -483,12 +722,60 @@
             document.getElementById('finalScore').textContent = score;
             document.getElementById('correctCount').textContent = correctCount;
             document.getElementById('incorrectCount').textContent = incorrectCount;
+            
+            // ハイスコアチェック
+            const currentHighScore = highScores[selectedTime] || { score: 0 };
+            if (score > currentHighScore.score) {
+                document.getElementById('congratsMessage').style.display = 'block';
+                document.getElementById('nameInput').style.display = 'block';
+            } else {
+                document.getElementById('congratsMessage').style.display = 'none';
+                document.getElementById('nameInput').style.display = 'none';
+            }
+            
+            displayHighScores('scoreListEnd');
+        }
+
+        // ハイスコアを保存
+        function saveHighScore() {
+            const name = document.getElementById('playerName').value.trim() || '名無し';
+            highScores[selectedTime] = { name: name, score: score };
+            saveHighScores();
+            displayHighScores('scoreListEnd');
+            document.getElementById('nameInput').style.display = 'none';
         }
 
         // ゲームリセット
         function resetGame() {
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('startScreen').style.display = 'block';
+            displayHighScores('scoreListStart');
+        }
+
+        // 音声のオン/オフ切り替え
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            document.getElementById('soundToggle').textContent = isSoundEnabled ? '🔊' : '🔇';
+        }
+
+        // フルスクリーン切り替え
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // 初期化
+        loadHighScores();
+        displayHighScores('scoreListStart');
+
+        // PWA対応
+        if ('standalone' in navigator && navigator.standalone) {
+            document.querySelector('.fullscreen-btn').style.display = 'none';
         }
     </script>
 </body>
