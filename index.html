@@ -98,7 +98,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 80px;
+            min-height: 100px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -132,10 +132,45 @@
             100% { transform: scale(1); background: white; }
         }
 
+        .shape-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .shape-container.position-top {
+            align-items: flex-start;
+            padding-top: 5px;
+        }
+
+        .shape-container.position-center {
+            align-items: center;
+        }
+
+        .shape-container.position-bottom {
+            align-items: flex-end;
+            padding-bottom: 5px;
+        }
+
         .shape {
-            font-size: 25px;
             margin: 2px;
             line-height: 1;
+        }
+
+        .shape.size-small {
+            font-size: 18px;
+        }
+
+        .shape.size-medium {
+            font-size: 25px;
+        }
+
+        .shape.size-large {
+            font-size: 32px;
         }
 
         .test-card-container {
@@ -149,7 +184,7 @@
             border: 3px solid #333;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             min-width: 120px;
-            min-height: 100px;
+            min-height: 120px;
         }
 
         .feedback {
@@ -233,6 +268,44 @@
         .time-option.selected {
             background: linear-gradient(45deg, #4ade80, #22c55e);
             transform: scale(1.05);
+        }
+
+        .rule-selector {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .rule-selector h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .rule-checkbox {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+
+        .rule-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .rule-checkbox label {
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .rule-error {
+            color: #f87171;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
         }
 
         .game-over {
@@ -342,6 +415,33 @@
                 フィードバックを見て適応してください
             </p>
             
+            <div class="rule-selector">
+                <h3>ルールを選択（最低3つ）</h3>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule-color" checked onchange="checkRuleSelection()">
+                    <label for="rule-color">色（赤、緑、青、紫）</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule-shape" checked onchange="checkRuleSelection()">
+                    <label for="rule-shape">形（●、★、▲、■）</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule-number" checked onchange="checkRuleSelection()">
+                    <label for="rule-number">数（1〜4個）</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule-position" onchange="checkRuleSelection()">
+                    <label for="rule-position">位置（上、中、下）</label>
+                </div>
+                <div class="rule-checkbox">
+                    <input type="checkbox" id="rule-size" onchange="checkRuleSelection()">
+                    <label for="rule-size">サイズ（小、中、大）</label>
+                </div>
+                <div class="rule-error" id="ruleError" style="display: none;">
+                    最低3つのルールを選択してください
+                </div>
+            </div>
+            
             <h3>トレーニング時間を選択</h3>
             <div class="time-selector">
                 <div class="time-option" onclick="selectTime(30)">30秒</div>
@@ -414,12 +514,15 @@
 
     <script>
         // カードの属性
-        const colors = ['red', 'green', 'blue', 'yellow'];
+        const colors = ['red', 'green', 'blue', 'purple']; // 黄色を紫に変更
         const shapes = ['●', '★', '▲', '■'];
         const numbers = [1, 2, 3, 4];
+        const positions = ['top', 'center', 'bottom'];
+        const sizes = ['small', 'medium', 'large'];
 
         // ゲームの状態
-        let currentRule = 'color';
+        let activeRules = [];
+        let currentRule = '';
         let score = 0;
         let correctCount = 0;
         let incorrectCount = 0;
@@ -435,6 +538,33 @@
 
         // ハイスコアデータ
         let highScores = {};
+
+        // ターゲットカード（固定）
+        const targetCards = [
+            { color: 'red', shape: '▲', number: 1, position: 'top', size: 'small' },
+            { color: 'green', shape: '★', number: 2, position: 'center', size: 'medium' },
+            { color: 'purple', shape: '●', number: 3, position: 'bottom', size: 'large' },
+            { color: 'blue', shape: '■', number: 4, position: 'center', size: 'small' }
+        ];
+
+        // ルール選択チェック
+        function checkRuleSelection() {
+            const selectedRules = [];
+            if (document.getElementById('rule-color').checked) selectedRules.push('color');
+            if (document.getElementById('rule-shape').checked) selectedRules.push('shape');
+            if (document.getElementById('rule-number').checked) selectedRules.push('number');
+            if (document.getElementById('rule-position').checked) selectedRules.push('position');
+            if (document.getElementById('rule-size').checked) selectedRules.push('size');
+            
+            const error = document.getElementById('ruleError');
+            if (selectedRules.length < 3) {
+                error.style.display = 'block';
+                return false;
+            } else {
+                error.style.display = 'none';
+                return true;
+            }
+        }
 
         // ローカルストレージからハイスコアを読み込み
         function loadHighScores() {
@@ -523,14 +653,6 @@
             oscillator.stop(audioContext.currentTime + 0.3);
         }
 
-        // ターゲットカード（固定）
-        const targetCards = [
-            { color: 'red', shape: '▲', number: 1 },
-            { color: 'green', shape: '★', number: 2 },
-            { color: 'yellow', shape: '●', number: 3 },
-            { color: 'blue', shape: '■', number: 4 }
-        ];
-
         // 時間選択
         function selectTime(seconds) {
             selectedTime = seconds;
@@ -542,13 +664,18 @@
         // カードを表示する関数
         function displayCard(card, element) {
             element.innerHTML = '';
+            const container = document.createElement('div');
+            container.className = `shape-container position-${card.position}`;
+            
             for (let i = 0; i < card.number; i++) {
                 const shape = document.createElement('span');
-                shape.className = 'shape';
+                shape.className = `shape size-${card.size}`;
                 shape.textContent = card.shape;
                 shape.style.color = card.color;
-                element.appendChild(shape);
+                container.appendChild(shape);
             }
+            
+            element.appendChild(container);
         }
 
         // ターゲットカードを初期化
@@ -570,7 +697,9 @@
             return {
                 color: colors[Math.floor(Math.random() * colors.length)],
                 shape: shapes[Math.floor(Math.random() * shapes.length)],
-                number: numbers[Math.floor(Math.random() * numbers.length)]
+                number: numbers[Math.floor(Math.random() * numbers.length)],
+                position: positions[Math.floor(Math.random() * positions.length)],
+                size: sizes[Math.floor(Math.random() * sizes.length)]
             };
         }
 
@@ -604,16 +733,8 @@
             let isCorrect = false;
             
             // 現在のルールに基づいて正誤判定
-            switch (currentRule) {
-                case 'color':
-                    isCorrect = testCard.color === targetCard.color;
-                    break;
-                case 'shape':
-                    isCorrect = testCard.shape === targetCard.shape;
-                    break;
-                case 'number':
-                    isCorrect = testCard.number === targetCard.number;
-                    break;
+            if (testCard[currentRule] === targetCard[currentRule]) {
+                isCorrect = true;
             }
             
             // フィードバック表示とスコア更新
@@ -659,14 +780,13 @@
 
         // ルールを変更
         function changeRule() {
-            const rules = ['color', 'shape', 'number'];
             const lastRule = currentRule;
             do {
-                currentRule = rules[Math.floor(Math.random() * rules.length)];
-            } while (currentRule === lastRule);
+                currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
+            } while (currentRule === lastRule && activeRules.length > 1);
             
-            // 次のルール変更までの正解数をランダムに設定（5〜15回）
-            nextRuleChange = Math.floor(Math.random() * 11) + 5;
+            // 次のルール変更までの正解数をランダムに設定（1〜8回）
+            nextRuleChange = Math.floor(Math.random() * 8) + 1;
             correctInCurrentRule = 0;
         }
 
@@ -690,6 +810,18 @@
 
         // ゲーム開始
         function startGame() {
+            if (!checkRuleSelection()) {
+                return;
+            }
+            
+            // 選択されたルールを取得
+            activeRules = [];
+            if (document.getElementById('rule-color').checked) activeRules.push('color');
+            if (document.getElementById('rule-shape').checked) activeRules.push('shape');
+            if (document.getElementById('rule-number').checked) activeRules.push('number');
+            if (document.getElementById('rule-position').checked) activeRules.push('position');
+            if (document.getElementById('rule-size').checked) activeRules.push('size');
+            
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             
@@ -701,8 +833,8 @@
             correctCount = 0;
             incorrectCount = 0;
             timeLeft = selectedTime;
-            currentRule = 'color';
-            nextRuleChange = Math.floor(Math.random() * 11) + 5;
+            currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
+            nextRuleChange = Math.floor(Math.random() * 8) + 1;
             correctInCurrentRule = 0;
             
             updateScore();
