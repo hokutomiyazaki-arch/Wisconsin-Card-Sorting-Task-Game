@@ -105,18 +105,34 @@
             position: relative;
         }
 
+        .card.border-solid {
+            border: 3px solid #333;
+        }
+
+        .card.border-dashed {
+            border: 3px dashed #333;
+        }
+
+        .card.border-double {
+            border: 6px double #333;
+        }
+
+        .card.border-none {
+            border: 3px solid transparent;
+        }
+
         .card:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
         }
 
         .card.highlight-correct {
-            border: 3px solid #4ade80;
+            border-color: #4ade80 !important;
             animation: pulse-correct 0.5s ease-in-out;
         }
 
         .card.highlight-incorrect {
-            border: 3px solid #f87171;
+            border-color: #f87171 !important;
             animation: pulse-incorrect 0.5s ease-in-out;
         }
 
@@ -173,6 +189,40 @@
             font-size: 32px;
         }
 
+        .shape.pattern-filled {
+            /* デフォルト（塗りつぶし） */
+        }
+
+        .shape.pattern-striped {
+            background: repeating-linear-gradient(
+                45deg,
+                currentColor,
+                currentColor 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 0 currentColor;
+        }
+
+        .shape.pattern-dotted {
+            background-image: radial-gradient(circle, currentColor 30%, transparent 30%);
+            background-size: 4px 4px;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 0 currentColor;
+        }
+
+        .shape.pattern-hollow {
+            -webkit-text-stroke: 2px currentColor;
+            -webkit-text-fill-color: transparent;
+            text-stroke: 2px currentColor;
+            text-fill-color: transparent;
+        }
+
         .test-card-container {
             display: flex;
             justify-content: center;
@@ -181,7 +231,6 @@
 
         .test-card {
             background: white;
-            border: 3px solid #333;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             min-width: 120px;
             min-height: 120px;
@@ -270,42 +319,36 @@
             transform: scale(1.05);
         }
 
-        .rule-selector {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+        .level-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             margin: 20px 0;
         }
 
-        .rule-selector h3 {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .rule-checkbox {
-            display: flex;
-            align-items: center;
-            margin: 8px 0;
+        .level-option {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 15px;
             cursor: pointer;
-        }
-
-        .rule-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .rule-checkbox label {
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .rule-error {
-            color: #f87171;
-            font-size: 12px;
-            margin-top: 10px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .level-option:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .level-option.selected {
+            background: linear-gradient(45deg, #60a5fa, #3b82f6);
+            transform: scale(1.05);
+        }
+
+        .level-details {
+            font-size: 11px;
+            margin-top: 5px;
+            opacity: 0.8;
         }
 
         .game-over {
@@ -415,30 +458,19 @@
                 フィードバックを見て適応してください
             </p>
             
-            <div class="rule-selector">
-                <h3>ルールを選択（最低3つ）</h3>
-                <div class="rule-checkbox">
-                    <input type="checkbox" id="rule-color" checked onchange="checkRuleSelection()">
-                    <label for="rule-color">色（赤、緑、青、紫）</label>
+            <h3>難易度レベルを選択</h3>
+            <div class="level-selector">
+                <div class="level-option selected" onclick="selectLevel(1)">
+                    <div>レベル1</div>
+                    <div class="level-details">色・形・数</div>
                 </div>
-                <div class="rule-checkbox">
-                    <input type="checkbox" id="rule-shape" checked onchange="checkRuleSelection()">
-                    <label for="rule-shape">形（●、★、▲、■）</label>
+                <div class="level-option" onclick="selectLevel(2)">
+                    <div>レベル2</div>
+                    <div class="level-details">+位置・サイズ・枠線</div>
                 </div>
-                <div class="rule-checkbox">
-                    <input type="checkbox" id="rule-number" checked onchange="checkRuleSelection()">
-                    <label for="rule-number">数（1〜4個）</label>
-                </div>
-                <div class="rule-checkbox">
-                    <input type="checkbox" id="rule-position" onchange="checkRuleSelection()">
-                    <label for="rule-position">位置（上、中、下）</label>
-                </div>
-                <div class="rule-checkbox">
-                    <input type="checkbox" id="rule-size" onchange="checkRuleSelection()">
-                    <label for="rule-size">サイズ（小、中、大）</label>
-                </div>
-                <div class="rule-error" id="ruleError" style="display: none;">
-                    最低3つのルールを選択してください
+                <div class="level-option" onclick="selectLevel(3)">
+                    <div>レベル3</div>
+                    <div class="level-details">+パターン（全7属性）</div>
                 </div>
             </div>
             
@@ -480,6 +512,10 @@
             </div>
             
             <div class="feedback" id="feedback"></div>
+            
+            <button onclick="confirmEndGame()" style="background: linear-gradient(45deg, #ef4444, #dc2626); margin-top: 20px;">
+                ゲーム終了
+            </button>
         </div>
 
         <div id="gameOver" style="display: none;">
@@ -514,13 +550,23 @@
 
     <script>
         // カードの属性
-        const colors = ['red', 'green', 'blue', 'purple']; // 黄色を紫に変更
+        const colors = ['red', 'green', 'blue', 'purple'];
         const shapes = ['●', '★', '▲', '■'];
         const numbers = [1, 2, 3, 4];
         const positions = ['top', 'center', 'bottom'];
         const sizes = ['small', 'medium', 'large'];
+        const borders = ['solid', 'dashed', 'double', 'none'];
+        const patterns = ['filled', 'striped', 'dotted', 'hollow'];
+
+        // レベル設定
+        const levelRules = {
+            1: ['color', 'shape', 'number'],
+            2: ['color', 'shape', 'number', 'position', 'size', 'border'],
+            3: ['color', 'shape', 'number', 'position', 'size', 'border', 'pattern']
+        };
 
         // ゲームの状態
+        let selectedLevel = 1;
         let activeRules = [];
         let currentRule = '';
         let score = 0;
@@ -541,29 +587,34 @@
 
         // ターゲットカード（固定）
         const targetCards = [
-            { color: 'red', shape: '▲', number: 1, position: 'top', size: 'small' },
-            { color: 'green', shape: '★', number: 2, position: 'center', size: 'medium' },
-            { color: 'purple', shape: '●', number: 3, position: 'bottom', size: 'large' },
-            { color: 'blue', shape: '■', number: 4, position: 'center', size: 'small' }
+            { 
+                color: 'red', shape: '▲', number: 1, 
+                position: 'top', size: 'small', 
+                border: 'solid', pattern: 'filled' 
+            },
+            { 
+                color: 'green', shape: '★', number: 2, 
+                position: 'center', size: 'medium', 
+                border: 'dashed', pattern: 'striped' 
+            },
+            { 
+                color: 'purple', shape: '●', number: 3, 
+                position: 'bottom', size: 'large', 
+                border: 'double', pattern: 'dotted' 
+            },
+            { 
+                color: 'blue', shape: '■', number: 4, 
+                position: 'center', size: 'small', 
+                border: 'none', pattern: 'hollow' 
+            }
         ];
 
-        // ルール選択チェック
-        function checkRuleSelection() {
-            const selectedRules = [];
-            if (document.getElementById('rule-color').checked) selectedRules.push('color');
-            if (document.getElementById('rule-shape').checked) selectedRules.push('shape');
-            if (document.getElementById('rule-number').checked) selectedRules.push('number');
-            if (document.getElementById('rule-position').checked) selectedRules.push('position');
-            if (document.getElementById('rule-size').checked) selectedRules.push('size');
-            
-            const error = document.getElementById('ruleError');
-            if (selectedRules.length < 3) {
-                error.style.display = 'block';
-                return false;
-            } else {
-                error.style.display = 'none';
-                return true;
-            }
+        // レベル選択
+        function selectLevel(level) {
+            selectedLevel = level;
+            const options = document.querySelectorAll('.level-option');
+            options.forEach(option => option.classList.remove('selected'));
+            event.target.closest('.level-option').classList.add('selected');
         }
 
         // ローカルストレージからハイスコアを読み込み
@@ -572,12 +623,15 @@
             if (saved) {
                 highScores = JSON.parse(saved);
             } else {
-                highScores = {
-                    30: { name: '-', score: 0 },
-                    60: { name: '-', score: 0 },
-                    180: { name: '-', score: 0 },
-                    300: { name: '-', score: 0 }
-                };
+                highScores = {};
+                for (let level = 1; level <= 3; level++) {
+                    highScores[level] = {
+                        30: { name: '-', score: 0 },
+                        60: { name: '-', score: 0 },
+                        180: { name: '-', score: 0 },
+                        300: { name: '-', score: 0 }
+                    };
+                }
             }
         }
 
@@ -594,16 +648,23 @@
             const times = [30, 60, 180, 300];
             const labels = ['30秒', '1分', '3分', '5分'];
             
-            times.forEach((time, index) => {
-                const entry = document.createElement('div');
-                entry.className = 'score-entry';
-                const scoreData = highScores[time] || { name: '-', score: 0 };
-                entry.innerHTML = `
-                    <span>${labels[index]}</span>
-                    <span>${scoreData.name}: ${scoreData.score}点</span>
-                `;
-                container.appendChild(entry);
-            });
+            for (let level = 1; level <= 3; level++) {
+                const levelDiv = document.createElement('div');
+                levelDiv.innerHTML = `<strong>レベル${level}</strong>`;
+                levelDiv.style.marginTop = level > 1 ? '10px' : '0';
+                container.appendChild(levelDiv);
+                
+                times.forEach((time, index) => {
+                    const entry = document.createElement('div');
+                    entry.className = 'score-entry';
+                    const scoreData = (highScores[level] && highScores[level][time]) || { name: '-', score: 0 };
+                    entry.innerHTML = `
+                        <span>${labels[index]}</span>
+                        <span>${scoreData.name}: ${scoreData.score}点</span>
+                    `;
+                    container.appendChild(entry);
+                });
+            }
         }
 
         // Web Audio APIで音を生成
@@ -664,12 +725,14 @@
         // カードを表示する関数
         function displayCard(card, element) {
             element.innerHTML = '';
+            element.className = `card border-${card.border}`;
+            
             const container = document.createElement('div');
             container.className = `shape-container position-${card.position}`;
             
             for (let i = 0; i < card.number; i++) {
                 const shape = document.createElement('span');
-                shape.className = `shape size-${card.size}`;
+                shape.className = `shape size-${card.size} pattern-${card.pattern}`;
                 shape.textContent = card.shape;
                 shape.style.color = card.color;
                 container.appendChild(shape);
@@ -685,7 +748,6 @@
             
             targetCards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
-                cardElement.className = 'card';
                 cardElement.onclick = () => selectCard(index);
                 displayCard(card, cardElement);
                 container.appendChild(cardElement);
@@ -699,7 +761,9 @@
                 shape: shapes[Math.floor(Math.random() * shapes.length)],
                 number: numbers[Math.floor(Math.random() * numbers.length)],
                 position: positions[Math.floor(Math.random() * positions.length)],
-                size: sizes[Math.floor(Math.random() * sizes.length)]
+                size: sizes[Math.floor(Math.random() * sizes.length)],
+                border: borders[Math.floor(Math.random() * borders.length)],
+                pattern: patterns[Math.floor(Math.random() * patterns.length)]
             };
         }
 
@@ -810,17 +874,8 @@
 
         // ゲーム開始
         function startGame() {
-            if (!checkRuleSelection()) {
-                return;
-            }
-            
-            // 選択されたルールを取得
-            activeRules = [];
-            if (document.getElementById('rule-color').checked) activeRules.push('color');
-            if (document.getElementById('rule-shape').checked) activeRules.push('shape');
-            if (document.getElementById('rule-number').checked) activeRules.push('number');
-            if (document.getElementById('rule-position').checked) activeRules.push('position');
-            if (document.getElementById('rule-size').checked) activeRules.push('size');
+            // レベルに応じたルールを設定
+            activeRules = levelRules[selectedLevel];
             
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
@@ -845,6 +900,16 @@
             gameTimer = setInterval(updateTimer, 1000);
         }
 
+        // ゲーム終了確認
+        function confirmEndGame() {
+            if (confirm('ゲームを終了してメニューに戻りますか？\n現在のスコアは保存されません。')) {
+                clearInterval(gameTimer);
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('startScreen').style.display = 'block';
+                displayHighScores('scoreListStart');
+            }
+        }
+
         // ゲーム終了
         function endGame() {
             clearInterval(gameTimer);
@@ -856,7 +921,10 @@
             document.getElementById('incorrectCount').textContent = incorrectCount;
             
             // ハイスコアチェック
-            const currentHighScore = highScores[selectedTime] || { score: 0 };
+            if (!highScores[selectedLevel]) {
+                highScores[selectedLevel] = {};
+            }
+            const currentHighScore = highScores[selectedLevel][selectedTime] || { score: 0 };
             if (score > currentHighScore.score) {
                 document.getElementById('congratsMessage').style.display = 'block';
                 document.getElementById('nameInput').style.display = 'block';
@@ -871,7 +939,10 @@
         // ハイスコアを保存
         function saveHighScore() {
             const name = document.getElementById('playerName').value.trim() || '名無し';
-            highScores[selectedTime] = { name: name, score: score };
+            if (!highScores[selectedLevel]) {
+                highScores[selectedLevel] = {};
+            }
+            highScores[selectedLevel][selectedTime] = { name: name, score: score };
             saveHighScores();
             displayHighScores('scoreListEnd');
             document.getElementById('nameInput').style.display = 'none';
