@@ -118,7 +118,7 @@
         }
 
         .card.border-none {
-            border: 3px solid transparent;
+            border: none;
         }
 
         .card:hover {
@@ -148,37 +148,19 @@
             100% { transform: scale(1); background: white; }
         }
 
-        .shape-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .shape-container.position-top {
-            align-items: flex-start;
-            padding-top: 5px;
-        }
-
-        .shape-container.position-center {
-            align-items: center;
-        }
-
-        .shape-container.position-bottom {
-            align-items: flex-end;
-            padding-bottom: 5px;
-        }
-
         .shape {
+            font-size: 25px;
             margin: 2px;
             line-height: 1;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5),
+                         1px 1px 0 rgba(0, 0, 0, 0.3),
+                         -1px -1px 0 rgba(0, 0, 0, 0.3),
+                         1px -1px 0 rgba(0, 0, 0, 0.3),
+                         -1px 1px 0 rgba(0, 0, 0, 0.3);
         }
 
         .shape.size-small {
-            font-size: 18px;
+            font-size: 15px;
         }
 
         .shape.size-medium {
@@ -186,41 +168,18 @@
         }
 
         .shape.size-large {
-            font-size: 32px;
+            font-size: 35px;
         }
 
-        .shape.pattern-filled {
-            /* デフォルト（塗りつぶし） */
-        }
-
-        .shape.pattern-striped {
-            background: repeating-linear-gradient(
-                45deg,
-                currentColor,
-                currentColor 2px,
-                transparent 2px,
-                transparent 4px
-            );
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 0 currentColor;
-        }
-
-        .shape.pattern-dotted {
-            background-image: radial-gradient(circle, currentColor 30%, transparent 30%);
-            background-size: 4px 4px;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 0 currentColor;
-        }
-
-        .shape.pattern-hollow {
-            -webkit-text-stroke: 2px currentColor;
-            -webkit-text-fill-color: transparent;
-            text-stroke: 2px currentColor;
-            text-fill-color: transparent;
+        .size-label {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: #666;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 5px;
+            border-radius: 3px;
         }
 
         .test-card-container {
@@ -293,6 +252,13 @@
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
         }
 
+        button.end-game-btn {
+            background: linear-gradient(45deg, #f87171, #ef4444);
+            max-width: 150px;
+            font-size: 14px;
+            padding: 8px 20px;
+        }
+
         .time-selector {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -319,36 +285,38 @@
             transform: scale(1.05);
         }
 
-        .level-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        .difficulty-settings {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
             margin: 20px 0;
         }
 
-        .level-option {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 15px;
+        .difficulty-settings h3 {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
         }
 
-        .level-option:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .level-option.selected {
-            background: linear-gradient(45deg, #60a5fa, #3b82f6);
-            transform: scale(1.05);
-        }
-
-        .level-details {
-            font-size: 11px;
-            margin-top: 5px;
-            opacity: 0.8;
+        .checkbox-item label {
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .game-over {
@@ -458,19 +426,29 @@
                 フィードバックを見て適応してください
             </p>
             
-            <h3>難易度レベルを選択</h3>
-            <div class="level-selector">
-                <div class="level-option selected" onclick="selectLevel(1)">
-                    <div>レベル1</div>
-                    <div class="level-details">色・形・数</div>
-                </div>
-                <div class="level-option" onclick="selectLevel(2)">
-                    <div>レベル2</div>
-                    <div class="level-details">+位置・サイズ・枠線</div>
-                </div>
-                <div class="level-option" onclick="selectLevel(3)">
-                    <div>レベル3</div>
-                    <div class="level-details">+パターン（全7属性）</div>
+            <div class="difficulty-settings">
+                <h3>難易度設定（使用する要素）</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useColor" checked>
+                        <label for="useColor">色（赤、緑、青、黄）</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useShape" checked>
+                        <label for="useShape">形（●、★、▲、■）</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useNumber" checked>
+                        <label for="useNumber">数（1〜4個）</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useBorder">
+                        <label for="useBorder">境界線（実線、破線、二重線、なし）</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useSize">
+                        <label for="useSize">サイズ（大、中、小）</label>
+                    </div>
                 </div>
             </div>
             
@@ -513,9 +491,7 @@
             
             <div class="feedback" id="feedback"></div>
             
-            <button onclick="confirmEndGame()" style="background: linear-gradient(45deg, #ef4444, #dc2626); margin-top: 20px;">
-                ゲーム終了
-            </button>
+            <button class="end-game-btn" onclick="confirmEndGame()">ゲーム終了</button>
         </div>
 
         <div id="gameOver" style="display: none;">
@@ -550,25 +526,16 @@
 
     <script>
         // カードの属性
-        const colors = ['red', 'green', 'blue', 'purple'];
+        const colors = ['red', 'green', 'blue', 'yellow'];
         const shapes = ['●', '★', '▲', '■'];
         const numbers = [1, 2, 3, 4];
-        const positions = ['top', 'center', 'bottom'];
-        const sizes = ['small', 'medium', 'large'];
         const borders = ['solid', 'dashed', 'double', 'none'];
-        const patterns = ['filled', 'striped', 'dotted', 'hollow'];
-
-        // レベル設定
-        const levelRules = {
-            1: ['color', 'shape', 'number'],
-            2: ['color', 'shape', 'number', 'position', 'size', 'border'],
-            3: ['color', 'shape', 'number', 'position', 'size', 'border', 'pattern']
-        };
+        const sizes = ['small', 'medium', 'large'];
+        const sizeLabels = { small: '小', medium: '中', large: '大' };
 
         // ゲームの状態
-        let selectedLevel = 1;
-        let activeRules = [];
         let currentRule = '';
+        let activeRules = [];
         let score = 0;
         let correctCount = 0;
         let incorrectCount = 0;
@@ -585,36 +552,30 @@
         // ハイスコアデータ
         let highScores = {};
 
-        // ターゲットカード（固定）
-        const targetCards = [
-            { 
-                color: 'red', shape: '▲', number: 1, 
-                position: 'top', size: 'small', 
-                border: 'solid', pattern: 'filled' 
-            },
-            { 
-                color: 'green', shape: '★', number: 2, 
-                position: 'center', size: 'medium', 
-                border: 'dashed', pattern: 'striped' 
-            },
-            { 
-                color: 'purple', shape: '●', number: 3, 
-                position: 'bottom', size: 'large', 
-                border: 'double', pattern: 'dotted' 
-            },
-            { 
-                color: 'blue', shape: '■', number: 4, 
-                position: 'center', size: 'small', 
-                border: 'none', pattern: 'hollow' 
-            }
-        ];
+        // ターゲットカード（動的に生成）
+        let targetCards = [];
 
-        // レベル選択
-        function selectLevel(level) {
-            selectedLevel = level;
-            const options = document.querySelectorAll('.level-option');
-            options.forEach(option => option.classList.remove('selected'));
-            event.target.closest('.level-option').classList.add('selected');
+        // ターゲットカードを生成
+        function generateTargetCards() {
+            targetCards = [];
+            const usedCombinations = new Set();
+            
+            while (targetCards.length < 4) {
+                const card = {
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    shape: shapes[Math.floor(Math.random() * shapes.length)],
+                    number: numbers[Math.floor(Math.random() * numbers.length)],
+                    border: borders[Math.floor(Math.random() * borders.length)],
+                    size: sizes[Math.floor(Math.random() * sizes.length)]
+                };
+                
+                // 各属性で重複しないようにする（より良い分類のため）
+                const key = `${card.color}-${card.shape}-${card.number}`;
+                if (!usedCombinations.has(key)) {
+                    usedCombinations.add(key);
+                    targetCards.push(card);
+                }
+            }
         }
 
         // ローカルストレージからハイスコアを読み込み
@@ -623,15 +584,12 @@
             if (saved) {
                 highScores = JSON.parse(saved);
             } else {
-                highScores = {};
-                for (let level = 1; level <= 3; level++) {
-                    highScores[level] = {
-                        30: { name: '-', score: 0 },
-                        60: { name: '-', score: 0 },
-                        180: { name: '-', score: 0 },
-                        300: { name: '-', score: 0 }
-                    };
-                }
+                highScores = {
+                    30: { name: '-', score: 0 },
+                    60: { name: '-', score: 0 },
+                    180: { name: '-', score: 0 },
+                    300: { name: '-', score: 0 }
+                };
             }
         }
 
@@ -648,23 +606,16 @@
             const times = [30, 60, 180, 300];
             const labels = ['30秒', '1分', '3分', '5分'];
             
-            for (let level = 1; level <= 3; level++) {
-                const levelDiv = document.createElement('div');
-                levelDiv.innerHTML = `<strong>レベル${level}</strong>`;
-                levelDiv.style.marginTop = level > 1 ? '10px' : '0';
-                container.appendChild(levelDiv);
-                
-                times.forEach((time, index) => {
-                    const entry = document.createElement('div');
-                    entry.className = 'score-entry';
-                    const scoreData = (highScores[level] && highScores[level][time]) || { name: '-', score: 0 };
-                    entry.innerHTML = `
-                        <span>${labels[index]}</span>
-                        <span>${scoreData.name}: ${scoreData.score}点</span>
-                    `;
-                    container.appendChild(entry);
-                });
-            }
+            times.forEach((time, index) => {
+                const entry = document.createElement('div');
+                entry.className = 'score-entry';
+                const scoreData = highScores[time] || { name: '-', score: 0 };
+                entry.innerHTML = `
+                    <span>${labels[index]}</span>
+                    <span>${scoreData.name}: ${scoreData.score}点</span>
+                `;
+                container.appendChild(entry);
+            });
         }
 
         // Web Audio APIで音を生成
@@ -727,18 +678,21 @@
             element.innerHTML = '';
             element.className = `card border-${card.border}`;
             
-            const container = document.createElement('div');
-            container.className = `shape-container position-${card.position}`;
+            // サイズラベルを追加
+            if (activeRules.includes('size')) {
+                const sizeLabel = document.createElement('div');
+                sizeLabel.className = 'size-label';
+                sizeLabel.textContent = sizeLabels[card.size];
+                element.appendChild(sizeLabel);
+            }
             
             for (let i = 0; i < card.number; i++) {
                 const shape = document.createElement('span');
-                shape.className = `shape size-${card.size} pattern-${card.pattern}`;
+                shape.className = `shape size-${card.size}`;
                 shape.textContent = card.shape;
                 shape.style.color = card.color;
-                container.appendChild(shape);
+                element.appendChild(shape);
             }
-            
-            element.appendChild(container);
         }
 
         // ターゲットカードを初期化
@@ -760,10 +714,8 @@
                 color: colors[Math.floor(Math.random() * colors.length)],
                 shape: shapes[Math.floor(Math.random() * shapes.length)],
                 number: numbers[Math.floor(Math.random() * numbers.length)],
-                position: positions[Math.floor(Math.random() * positions.length)],
-                size: sizes[Math.floor(Math.random() * sizes.length)],
                 border: borders[Math.floor(Math.random() * borders.length)],
-                pattern: patterns[Math.floor(Math.random() * patterns.length)]
+                size: sizes[Math.floor(Math.random() * sizes.length)]
             };
         }
 
@@ -803,7 +755,7 @@
             
             // フィードバック表示とスコア更新
             const feedback = document.getElementById('feedback');
-            const cards = document.querySelectorAll('.target-cards .card');
+            const cards = document.querySelectorAll('.target-cards > *');
             
             if (isCorrect) {
                 feedback.textContent = '正解！';
@@ -872,16 +824,34 @@
             }
         }
 
+        // アクティブなルールを取得
+        function getActiveRules() {
+            activeRules = [];
+            if (document.getElementById('useColor').checked) activeRules.push('color');
+            if (document.getElementById('useShape').checked) activeRules.push('shape');
+            if (document.getElementById('useNumber').checked) activeRules.push('number');
+            if (document.getElementById('useBorder').checked) activeRules.push('border');
+            if (document.getElementById('useSize').checked) activeRules.push('size');
+            
+            if (activeRules.length === 0) {
+                alert('少なくとも1つの要素を選択してください');
+                return false;
+            }
+            return true;
+        }
+
         // ゲーム開始
         function startGame() {
-            // レベルに応じたルールを設定
-            activeRules = levelRules[selectedLevel];
+            if (!getActiveRules()) return;
             
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             
             // 音声の初期化
             initAudio();
+            
+            // ターゲットカードを生成
+            generateTargetCards();
             
             // 初期化
             score = 0;
@@ -902,11 +872,8 @@
 
         // ゲーム終了確認
         function confirmEndGame() {
-            if (confirm('ゲームを終了してメニューに戻りますか？\n現在のスコアは保存されません。')) {
-                clearInterval(gameTimer);
-                document.getElementById('gameScreen').style.display = 'none';
-                document.getElementById('startScreen').style.display = 'block';
-                displayHighScores('scoreListStart');
+            if (confirm('本当にゲームを終了しますか？')) {
+                endGame();
             }
         }
 
@@ -921,10 +888,7 @@
             document.getElementById('incorrectCount').textContent = incorrectCount;
             
             // ハイスコアチェック
-            if (!highScores[selectedLevel]) {
-                highScores[selectedLevel] = {};
-            }
-            const currentHighScore = highScores[selectedLevel][selectedTime] || { score: 0 };
+            const currentHighScore = highScores[selectedTime] || { score: 0 };
             if (score > currentHighScore.score) {
                 document.getElementById('congratsMessage').style.display = 'block';
                 document.getElementById('nameInput').style.display = 'block';
@@ -939,10 +903,7 @@
         // ハイスコアを保存
         function saveHighScore() {
             const name = document.getElementById('playerName').value.trim() || '名無し';
-            if (!highScores[selectedLevel]) {
-                highScores[selectedLevel] = {};
-            }
-            highScores[selectedLevel][selectedTime] = { name: name, score: score };
+            highScores[selectedTime] = { name: name, score: score };
             saveHighScores();
             displayHighScores('scoreListEnd');
             document.getElementById('nameInput').style.display = 'none';
