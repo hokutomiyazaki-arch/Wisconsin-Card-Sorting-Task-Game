@@ -98,27 +98,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100px;
+            min-height: 80px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: relative;
-        }
-
-        .card.border-solid {
-            border: 3px solid #333;
-        }
-
-        .card.border-dashed {
-            border: 3px dashed #333;
-        }
-
-        .card.border-double {
-            border: 6px double #333;
-        }
-
-        .card.border-none {
-            border: none;
         }
 
         .card:hover {
@@ -127,12 +111,12 @@
         }
 
         .card.highlight-correct {
-            border-color: #4ade80 !important;
+            border: 3px solid #4ade80;
             animation: pulse-correct 0.5s ease-in-out;
         }
 
         .card.highlight-incorrect {
-            border-color: #f87171 !important;
+            border: 3px solid #f87171;
             animation: pulse-incorrect 0.5s ease-in-out;
         }
 
@@ -152,34 +136,6 @@
             font-size: 25px;
             margin: 2px;
             line-height: 1;
-            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5),
-                         1px 1px 0 rgba(0, 0, 0, 0.3),
-                         -1px -1px 0 rgba(0, 0, 0, 0.3),
-                         1px -1px 0 rgba(0, 0, 0, 0.3),
-                         -1px 1px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        .shape.size-small {
-            font-size: 15px;
-        }
-
-        .shape.size-medium {
-            font-size: 25px;
-        }
-
-        .shape.size-large {
-            font-size: 35px;
-        }
-
-        .size-label {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 10px;
-            color: #666;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 2px 5px;
-            border-radius: 3px;
         }
 
         .test-card-container {
@@ -190,9 +146,10 @@
 
         .test-card {
             background: white;
+            border: 3px solid #333;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             min-width: 120px;
-            min-height: 120px;
+            min-height: 100px;
         }
 
         .feedback {
@@ -252,13 +209,6 @@
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
         }
 
-        button.end-game-btn {
-            background: linear-gradient(45deg, #f87171, #ef4444);
-            max-width: 150px;
-            font-size: 14px;
-            padding: 8px 20px;
-        }
-
         .time-selector {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -283,40 +233,6 @@
         .time-option.selected {
             background: linear-gradient(45deg, #4ade80, #22c55e);
             transform: scale(1.05);
-        }
-
-        .difficulty-settings {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .difficulty-settings h3 {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .checkbox-group {
-            display: grid;
-            gap: 8px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label {
-            cursor: pointer;
-            font-size: 14px;
         }
 
         .game-over {
@@ -426,32 +342,6 @@
                 フィードバックを見て適応してください
             </p>
             
-            <div class="difficulty-settings">
-                <h3>難易度設定（使用する要素）</h3>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useColor" checked>
-                        <label for="useColor">色（赤、緑、青、黄）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useShape" checked>
-                        <label for="useShape">形（●、★、▲、■）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useNumber" checked>
-                        <label for="useNumber">数（1〜4個）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useBorder">
-                        <label for="useBorder">境界線（実線、破線、二重線、なし）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useSize">
-                        <label for="useSize">サイズ（大、中、小）</label>
-                    </div>
-                </div>
-            </div>
-            
             <h3>トレーニング時間を選択</h3>
             <div class="time-selector">
                 <div class="time-option" onclick="selectTime(30)">30秒</div>
@@ -490,8 +380,6 @@
             </div>
             
             <div class="feedback" id="feedback"></div>
-            
-            <button class="end-game-btn" onclick="confirmEndGame()">ゲーム終了</button>
         </div>
 
         <div id="gameOver" style="display: none;">
@@ -529,13 +417,9 @@
         const colors = ['red', 'green', 'blue', 'yellow'];
         const shapes = ['●', '★', '▲', '■'];
         const numbers = [1, 2, 3, 4];
-        const borders = ['solid', 'dashed', 'double', 'none'];
-        const sizes = ['small', 'medium', 'large'];
-        const sizeLabels = { small: '小', medium: '中', large: '大' };
 
         // ゲームの状態
-        let currentRule = '';
-        let activeRules = [];
+        let currentRule = 'color';
         let score = 0;
         let correctCount = 0;
         let incorrectCount = 0;
@@ -551,32 +435,6 @@
 
         // ハイスコアデータ
         let highScores = {};
-
-        // ターゲットカード（動的に生成）
-        let targetCards = [];
-
-        // ターゲットカードを生成
-        function generateTargetCards() {
-            targetCards = [];
-            const usedCombinations = new Set();
-            
-            while (targetCards.length < 4) {
-                const card = {
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    shape: shapes[Math.floor(Math.random() * shapes.length)],
-                    number: numbers[Math.floor(Math.random() * numbers.length)],
-                    border: borders[Math.floor(Math.random() * borders.length)],
-                    size: sizes[Math.floor(Math.random() * sizes.length)]
-                };
-                
-                // 各属性で重複しないようにする（より良い分類のため）
-                const key = `${card.color}-${card.shape}-${card.number}`;
-                if (!usedCombinations.has(key)) {
-                    usedCombinations.add(key);
-                    targetCards.push(card);
-                }
-            }
-        }
 
         // ローカルストレージからハイスコアを読み込み
         function loadHighScores() {
@@ -665,6 +523,14 @@
             oscillator.stop(audioContext.currentTime + 0.3);
         }
 
+        // ターゲットカード（固定）
+        const targetCards = [
+            { color: 'red', shape: '▲', number: 1 },
+            { color: 'green', shape: '★', number: 2 },
+            { color: 'yellow', shape: '●', number: 3 },
+            { color: 'blue', shape: '■', number: 4 }
+        ];
+
         // 時間選択
         function selectTime(seconds) {
             selectedTime = seconds;
@@ -676,19 +542,9 @@
         // カードを表示する関数
         function displayCard(card, element) {
             element.innerHTML = '';
-            element.className = `card border-${card.border}`;
-            
-            // サイズラベルを追加
-            if (activeRules.includes('size')) {
-                const sizeLabel = document.createElement('div');
-                sizeLabel.className = 'size-label';
-                sizeLabel.textContent = sizeLabels[card.size];
-                element.appendChild(sizeLabel);
-            }
-            
             for (let i = 0; i < card.number; i++) {
                 const shape = document.createElement('span');
-                shape.className = `shape size-${card.size}`;
+                shape.className = 'shape';
                 shape.textContent = card.shape;
                 shape.style.color = card.color;
                 element.appendChild(shape);
@@ -702,6 +558,7 @@
             
             targetCards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
+                cardElement.className = 'card';
                 cardElement.onclick = () => selectCard(index);
                 displayCard(card, cardElement);
                 container.appendChild(cardElement);
@@ -713,9 +570,7 @@
             return {
                 color: colors[Math.floor(Math.random() * colors.length)],
                 shape: shapes[Math.floor(Math.random() * shapes.length)],
-                number: numbers[Math.floor(Math.random() * numbers.length)],
-                border: borders[Math.floor(Math.random() * borders.length)],
-                size: sizes[Math.floor(Math.random() * sizes.length)]
+                number: numbers[Math.floor(Math.random() * numbers.length)]
             };
         }
 
@@ -749,13 +604,21 @@
             let isCorrect = false;
             
             // 現在のルールに基づいて正誤判定
-            if (testCard[currentRule] === targetCard[currentRule]) {
-                isCorrect = true;
+            switch (currentRule) {
+                case 'color':
+                    isCorrect = testCard.color === targetCard.color;
+                    break;
+                case 'shape':
+                    isCorrect = testCard.shape === targetCard.shape;
+                    break;
+                case 'number':
+                    isCorrect = testCard.number === targetCard.number;
+                    break;
             }
             
             // フィードバック表示とスコア更新
             const feedback = document.getElementById('feedback');
-            const cards = document.querySelectorAll('.target-cards > *');
+            const cards = document.querySelectorAll('.target-cards .card');
             
             if (isCorrect) {
                 feedback.textContent = '正解！';
@@ -796,10 +659,11 @@
 
         // ルールを変更
         function changeRule() {
+            const rules = ['color', 'shape', 'number'];
             const lastRule = currentRule;
             do {
-                currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
-            } while (currentRule === lastRule && activeRules.length > 1);
+                currentRule = rules[Math.floor(Math.random() * rules.length)];
+            } while (currentRule === lastRule);
             
             // 次のルール変更までの正解数をランダムに設定（1〜8回）
             nextRuleChange = Math.floor(Math.random() * 8) + 1;
@@ -824,41 +688,20 @@
             }
         }
 
-        // アクティブなルールを取得
-        function getActiveRules() {
-            activeRules = [];
-            if (document.getElementById('useColor').checked) activeRules.push('color');
-            if (document.getElementById('useShape').checked) activeRules.push('shape');
-            if (document.getElementById('useNumber').checked) activeRules.push('number');
-            if (document.getElementById('useBorder').checked) activeRules.push('border');
-            if (document.getElementById('useSize').checked) activeRules.push('size');
-            
-            if (activeRules.length === 0) {
-                alert('少なくとも1つの要素を選択してください');
-                return false;
-            }
-            return true;
-        }
-
         // ゲーム開始
         function startGame() {
-            if (!getActiveRules()) return;
-            
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             
             // 音声の初期化
             initAudio();
             
-            // ターゲットカードを生成
-            generateTargetCards();
-            
             // 初期化
             score = 0;
             correctCount = 0;
             incorrectCount = 0;
             timeLeft = selectedTime;
-            currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
+            currentRule = 'color';
             nextRuleChange = Math.floor(Math.random() * 8) + 1;
             correctInCurrentRule = 0;
             
@@ -868,13 +711,6 @@
             
             // タイマー開始
             gameTimer = setInterval(updateTimer, 1000);
-        }
-
-        // ゲーム終了確認
-        function confirmEndGame() {
-            if (confirm('本当にゲームを終了しますか？')) {
-                endGame();
-            }
         }
 
         // ゲーム終了
