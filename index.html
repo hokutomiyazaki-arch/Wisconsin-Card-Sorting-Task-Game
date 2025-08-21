@@ -558,23 +558,30 @@
         // ターゲットカードを生成
         function generateTargetCards() {
             targetCards = [];
-            const usedCombinations = new Set();
             
-            while (targetCards.length < 4) {
+            // 各属性の値を確実に含めるようにする
+            const colorsCopy = [...colors];
+            const shapesCopy = [...shapes];
+            const numbersCopy = [...numbers];
+            const bordersCopy = [...borders];
+            const sizesCopy = [...sizes];
+            
+            // 4枚のカードを生成（各属性の4つの値が1回ずつ使われる）
+            for (let i = 0; i < 4; i++) {
                 const card = {
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    shape: shapes[Math.floor(Math.random() * shapes.length)],
-                    number: numbers[Math.floor(Math.random() * numbers.length)],
-                    border: borders[Math.floor(Math.random() * borders.length)],
-                    size: sizes[Math.floor(Math.random() * sizes.length)]
+                    color: colorsCopy[i],
+                    shape: shapesCopy[i],
+                    number: numbersCopy[i],
+                    border: bordersCopy[i],
+                    size: sizesCopy[i % 3] // サイズは3種類なので循環
                 };
-                
-                // 各属性で重複しないようにする（より良い分類のため）
-                const key = `${card.color}-${card.shape}-${card.number}`;
-                if (!usedCombinations.has(key)) {
-                    usedCombinations.add(key);
-                    targetCards.push(card);
-                }
+                targetCards.push(card);
+            }
+            
+            // カードの順番をシャッフル
+            for (let i = targetCards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [targetCards[i], targetCards[j]] = [targetCards[j], targetCards[i]];
             }
         }
 
