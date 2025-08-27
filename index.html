@@ -419,7 +419,44 @@
         <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
         
         <div id="startScreen" class="start-screen">
-            <h2>カードソーティングゲーム</h2>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                <svg width="50" height="50" viewBox="0 0 200 200" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                    <path d="M 50 30 L 100 5 L 150 30 L 150 80 L 100 105 L 50 80 Z" fill="none" stroke="url(#gradient)" stroke-width="12"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#553c9a;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#2563eb;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#0891b2;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <!-- ノード -->
+                    <circle cx="40" cy="35" r="8" fill="#2e3f7f"/>
+                    <circle cx="80" cy="35" r="8" fill="#2e3f7f"/>
+                    <line x1="40" y1="35" x2="80" y2="35" stroke="#2e3f7f" stroke-width="4"/>
+                    
+                    <circle cx="120" cy="35" r="8" fill="#0891b2"/>
+                    <circle cx="160" cy="35" r="8" fill="#0891b2"/>
+                    <line x1="120" y1="35" x2="160" y2="35" stroke="#0891b2" stroke-width="4"/>
+                    
+                    <circle cx="40" cy="60" r="8" fill="#553c9a"/>
+                    <circle cx="80" cy="60" r="8" fill="#2563eb"/>
+                    <line x1="40" y1="60" x2="80" y2="60" stroke="#4c5aa0" stroke-width="4"/>
+                    
+                    <circle cx="40" cy="85" r="8" fill="#553c9a"/>
+                    <line x1="40" y1="60" x2="40" y2="85" stroke="#553c9a" stroke-width="4"/>
+                    
+                    <circle cx="80" cy="85" r="8" fill="#2e3f7f"/>
+                    <circle cx="120" cy="60" r="8" fill="#2e3f7f"/>
+                    <line x1="80" y1="85" x2="120" y2="60" stroke="#2e3f7f" stroke-width="4"/>
+                    
+                    <circle cx="140" cy="50" r="6" fill="#0891b2"/>
+                    <circle cx="140" cy="85" r="8" fill="#0891b2"/>
+                    <line x1="140" y1="50" x2="140" y2="85" stroke="#0891b2" stroke-width="4"/>
+                    
+                    <line x1="160" y1="60" x2="160" y2="85" stroke="#0891b2" stroke-width="4"/>
+                </svg>
+                <h2>カードソーティングゲーム</h2>
+            </div>
             <p>
                 正解で+1点、不正解で-1点<br>
                 ルールは予告なく変わります<br>
