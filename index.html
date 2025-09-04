@@ -1108,22 +1108,54 @@
         loadHighScores();
         displayHighScores('scoreListStart');
 
-        // PWA対応とフルスクリーンの自動適用
-        if ('standalone' in navigator && navigator.standalone) {
-            document.querySelector('.fullscreen-btn').style.display = 'none';
+        // アプリとして実行されているかチェックして、フルスクリーンボタンを制御
+        if (isStandalone) {
+            document.getElementById('fullscreenBtn').style.display = 'none';
         }
         
-        // ページ読み込み時に自動的にフルスクリーンを試みる
+        // ページ読み込み時に自動的にフルスクリーンを試みる（ブラウザの場合）
         document.addEventListener('DOMContentLoaded', function() {
-            // ユーザーの最初のタッチ/クリックでフルスクリーンにする
-            document.addEventListener('click', function() {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        console.log('Fullscreen request failed:', err);
-                    });
-                }
-            }, { once: true });
+            // モバイルデバイスで自動的にフルスクリーンを要求
+            if (!isStandalone && 'ontouchstart' in window) {
+                document.addEventListener('touchstart', function() {
+                    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log('Fullscreen request failed:', err);
+                        });
+                    }
+                }, { once: true });
+            }
+            
+            // デスクトップでもクリック時にフルスクリーン
+            if (!isStandalone) {
+                document.addEventListener('click', function() {
+                    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log('Fullscreen request failed:', err);
+                        });
+                    }
+                }, { once: true });
+            }
         });
+        
+        // ブラウザでアクセスした場合、インストールを促す
+        if (!isStandalone && !deferredPrompt) {
+            // インストールプロンプトがサポートされていない場合も表示
+            setTimeout(() => {
+                const promptElement = document.getElementById('installPrompt');
+                if (promptElement && promptElement.style.display !== 'block') {
+                    promptElement.style.display = 'block';
+                    // iOSの場合の説明を追加
+                    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                        promptElement.innerHTML = `
+                            <p>📱 ホーム画面に追加してアプリとして使用できます<br>
+                            Safari: 共有ボタン → ホーム画面に追加</p>
+                            <button class="install-button secondary" onclick="dismissInstallPrompt()">閉じる</button>
+                        `;
+                    }
+                }
+            }, 3000);
+        }
     </script>
 </body>
 </html>
