@@ -3,1152 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#667eea">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="FNT512.png">
-    <link rel="icon" type="image/png" href="FNT512-transparent.png">
-    <title>ウィスコンシンカードソーティングタスク - FNT</title>
+    <meta name="theme-color" content="#4285f4">
+    <link rel="manifest" href="test-manifest.json">
+    <title>PWAテスト</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            padding: 10px;
-            overflow-x: hidden;
-        }
-
-        /* スプラッシュスクリーン */
-        .splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: fadeOut 0.5s ease-in-out 2.5s forwards;
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; visibility: hidden; }
-        }
-
-        .splash-content {
+            font-family: Arial, sans-serif;
             text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
+            padding: 20px;
+            background: #f0f0f0;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .splash-logo {
-            width: 100px;
-            height: 100px;
-            margin-bottom: 20px;
-            animation: logoScale 0.6s ease-in-out;
-        }
-
-        @keyframes logoScale {
-            0% { transform: scale(0.8); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .splash-title {
-            color: #2e3f7f;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .splash-subtitle {
-            color: #667eea;
-            font-size: 18px;
-            margin-bottom: 30px;
-        }
-
-        .splash-copyright {
-            color: #999;
-            font-size: 12px;
-            position: absolute;
-            bottom: 30px;
-        }
-
         .container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            padding: 15px;
-            padding-bottom: 40px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-
-        .copyright {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            font-size: 10px;
-            color: rgba(255,255,255,0.6);
-            white-space: nowrap;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .timer-score {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-        }
-
-        .timer, .score {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .timer {
-            color: #ffd700;
-        }
-
-        .instructions {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
-            line-height: 1.4;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-        }
-
-        .target-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        @media (min-width: 400px) {
-            .target-cards {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        .card {
+            max-width: 600px;
+            margin: 0 auto;
             background: white;
+            padding: 30px;
             border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .card.border-solid {
-            border: 3px solid #333;
-        }
-
-        .card.border-dashed {
-            border: 3px dashed #333;
-        }
-
-        .card.border-double {
-            border: 6px double #333;
-        }
-
-        .card.border-none {
-            border: none;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .card.highlight-correct {
-            border-color: #4ade80 !important;
-            animation: pulse-correct 0.5s ease-in-out;
-        }
-
-        .card.highlight-incorrect {
-            border-color: #f87171 !important;
-            animation: pulse-incorrect 0.5s ease-in-out;
-        }
-
-        @keyframes pulse-correct {
-            0% { transform: scale(1); background: white; }
-            50% { transform: scale(1.05); background: #d1fae5; }
-            100% { transform: scale(1); background: white; }
-        }
-
-        @keyframes pulse-incorrect {
-            0% { transform: scale(1); background: white; }
-            50% { transform: scale(1.05); background: #fee2e2; }
-            100% { transform: scale(1); background: white; }
-        }
-
-        .shape {
-            font-size: 25px;
-            margin: 2px;
-            line-height: 1;
-            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5),
-                         1px 1px 0 rgba(0, 0, 0, 0.3),
-                         -1px -1px 0 rgba(0, 0, 0, 0.3),
-                         1px -1px 0 rgba(0, 0, 0, 0.3),
-                         -1px 1px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        .shape.size-small {
-            font-size: 15px;
-        }
-
-        .shape.size-medium {
-            font-size: 25px;
-        }
-
-        .shape.size-large {
-            font-size: 35px;
-        }
-
-        .size-label {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            font-size: 10px;
-            color: #666;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 2px 5px;
-            border-radius: 3px;
-        }
-
-        .test-card-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .test-card {
-            background: white;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            min-width: 120px;
-            min-height: 120px;
-        }
-
-        .feedback {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            height: 25px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .correct {
-            color: #4ade80;
-        }
-
-        .incorrect {
-            color: #f87171;
-        }
-
-        .point-change {
-            position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            animation: float-up 1s ease-out forwards;
-            pointer-events: none;
-        }
-
-        @keyframes float-up {
-            0% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-40px);
-            }
-        }
-
         button {
-            background: linear-gradient(45deg, #4ade80, #22c55e);
+            background: #4285f4;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
+            padding: 10px 20px;
             font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: block;
-            margin: 10px auto;
-            width: 100%;
-            max-width: 200px;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        button.end-game-btn {
-            background: linear-gradient(45deg, #f87171, #ef4444);
-            max-width: 150px;
-            font-size: 14px;
-            padding: 8px 20px;
-        }
-
-        .time-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .time-option {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .time-option:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .time-option.selected {
-            background: linear-gradient(45deg, #4ade80, #22c55e);
-            transform: scale(1.05);
-        }
-
-        .difficulty-settings {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .difficulty-settings h3 {
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-
-        .checkbox-group {
-            display: grid;
-            gap: 8px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        .checkbox-item label {
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .game-over {
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .final-score {
-            font-size: 36px;
-            color: #ffd700;
-            margin: 10px 0;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
-        }
-
-        .start-screen {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .start-screen h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .start-screen p {
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.5;
-            opacity: 0.9;
-        }
-
-        .high-scores {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-
-        .high-scores h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .score-entry {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .congratulations {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #333;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 20px 0;
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-            animation: celebration 0.5s ease-in-out;
-        }
-
-        @keyframes celebration {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        input[type="text"] {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 16px;
-            color: #333;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 250px;
-        }
-
-        .fullscreen-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 20px;
+            margin: 10px;
         }
-
-        .install-button {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: none;
-            margin: 10px auto;
-            width: 100%;
-            max-width: 250px;
+        button:hover {
+            background: #357ae8;
         }
-
-        .install-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f0fe;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
         }
     </style>
 </head>
 <body>
-    <!-- スプラッシュスクリーン -->
-    <div class="splash-screen" id="splashScreen">
-        <div class="splash-content">
-            <img src="FNT_color2.png" alt="FNT Logo" class="splash-logo">
-            <h1 class="splash-title">Functional Neuro Training</h1>
-            <p class="splash-subtitle">カードソーティングゲーム</p>
-        </div>
-        <p class="splash-copyright">© Functional Neuro Training. All Rights Reserved.</p>
-    </div>
-
     <div class="container">
-        <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
+        <h1>PWAインストールテスト</h1>
+        <p>このページでPWAのインストール機能をテストできます</p>
         
-        <div id="startScreen" class="start-screen">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                <img src="FNT_color2.png" alt="Functional Neuro Training Logo" width="60" height="60" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
-                <h2>カードソーティングゲーム</h2>
-            </div>
-            
-            <button class="install-button" id="installButton" onclick="installApp()">
-                📱 アプリをインストール
-            </button>
-            
-            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; font-size: 13px; line-height: 1.6;">
-                <h3 style="margin-bottom: 10px; font-size: 16px;">ゲームのルール</h3>
-                <p style="margin-bottom: 8px;">
-                    1. 画面下部に表示されるカードを、上部の4枚のカードのいずれかに分類します<br>
-                    2. 分類ルール（色・形・数など）は教えられません<br>
-                    3. 正解/不正解のフィードバックから正しいルールを推測してください<br>
-                    4. ルールは予告なく変更されます。新しいルールに素早く適応してください<br>
-                    5. 正解で+1点、不正解で-1点。時間内に高得点を目指しましょう
-                </p>
-                <p style="margin-top: 12px; font-weight: bold;">
-                    これは前頭葉のアセスメントとしても使用できます。
-                </p>
-            </div>
-            
-            <div class="difficulty-settings">
-                <h3>難易度設定（使用する要素）</h3>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useColor" checked>
-                        <label for="useColor">色（赤、緑、青、黄）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useShape" checked>
-                        <label for="useShape">形（●、★、▲、■）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useNumber" checked>
-                        <label for="useNumber">数（1〜4個）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useBorder">
-                        <label for="useBorder">境界線（実線、破線、二重線、なし）</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="useSize">
-                        <label for="useSize">サイズ（大、中、小）</label>
-                    </div>
-                </div>
-            </div>
-            
-            <h3>トレーニング時間を選択</h3>
-            <div class="time-selector">
-                <div class="time-option" onclick="selectTime(30)">30秒</div>
-                <div class="time-option" onclick="selectTime(60)">1分</div>
-                <div class="time-option" onclick="selectTime(180)">3分</div>
-                <div class="time-option selected" onclick="selectTime(300)">5分</div>
-            </div>
-            
-            <div class="high-scores" id="highScoresStart">
-                <h3>ハイスコア</h3>
-                <div id="scoreListStart"></div>
-            </div>
-            
-            <button onclick="startGame()">ゲームスタート</button>
-        </div>
-
-        <div id="gameScreen" style="display: none;">
-            <h1>カードソーティングゲーム</h1>
-            
-            <div class="timer-score">
-                <div class="timer">残り時間: <span id="timeLeft">5:00</span></div>
-                <div class="score">スコア: <span id="score">0</span></div>
-            </div>
-
-            <div class="instructions">
-                下のカードを上のカードのいずれかにマッチさせてください
-                <button onclick="toggleSound()" style="background: rgba(255,255,255,0.2); padding: 5px 15px; margin-left: 10px; font-size: 12px;">
-                    <span id="soundToggle">🔊</span>
-                </button>
-            </div>
-
-            <div class="target-cards" id="targetCards"></div>
-            
-            <div class="test-card-container">
-                <div class="card test-card" id="testCard"></div>
-            </div>
-            
-            <div class="feedback" id="feedback"></div>
-            
-            <button class="end-game-btn" onclick="confirmEndGame()">ゲーム終了</button>
-        </div>
-
-        <div id="gameOver" style="display: none;">
-            <div id="congratsMessage" style="display: none;" class="congratulations">
-                🎉 Congratulations! Best Score! 🎉
-            </div>
-            
-            <div class="game-over">
-                <h2>ゲーム終了！</h2>
-                <div class="final-score" id="finalScore">0</div>
-                <div>点</div>
-                <div style="margin-top: 10px; font-size: 14px;">
-                    正解数: <span id="correctCount">0</span><br>
-                    不正解数: <span id="incorrectCount">0</span>
-                </div>
-                
-                <div id="nameInput" style="display: none; margin-top: 20px;">
-                    <p>ハイスコア更新！名前を入力してください：</p>
-                    <input type="text" id="playerName" placeholder="名前を入力" maxlength="20">
-                    <button onclick="saveHighScore()">保存</button>
-                </div>
-            </div>
-            
-            <div class="high-scores">
-                <h3>ハイスコア</h3>
-                <div id="scoreListEnd"></div>
-            </div>
-            
-            <button onclick="resetGame()">もう一度プレイ</button>
+        <div id="status">
+            <h3>診断情報：</h3>
+            <div id="diagnostics"></div>
         </div>
         
-        <div class="copyright">
-            © Functional Neuro Training. All Rights Reserved.
-        </div>
+        <button id="installBtn" style="display:none;" onclick="installPWA()">
+            アプリをインストール
+        </button>
+        
+        <button onclick="checkPWAStatus()">
+            PWA状態を再チェック
+        </button>
     </div>
 
     <script>
-        // カードの属性
-        const colors = ['red', 'green', 'blue', 'yellow'];
-        const shapes = ['●', '★', '▲', '■'];
-        const numbers = [1, 2, 3, 4];
-        const borders = ['solid', 'dashed', 'double', 'none'];
-        const sizes = ['small', 'medium', 'large'];
-        const sizeLabels = { small: '小', medium: '中', large: '大' };
-
-        // ゲームの状態
-        let currentRule = '';
-        let activeRules = [];
-        let score = 0;
-        let correctCount = 0;
-        let incorrectCount = 0;
-        let gameTimer = null;
-        let selectedTime = 300;
-        let timeLeft = 300;
-        let nextRuleChange = 0;
-        let correctInCurrentRule = 0;
-
-        // 音声の初期化
-        let audioContext = null;
-        let isSoundEnabled = true;
-
-        // ハイスコアデータ
-        let highScores = {};
-
-        // ターゲットカード（動的に生成）
-        let targetCards = [];
-
-        // PWA関連
         let deferredPrompt;
+        const diagnostics = document.getElementById('diagnostics');
+        
+        // 診断情報を更新
+        function updateDiagnostics(message, type = '') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.textContent = message;
+            diagnostics.appendChild(div);
+        }
         
         // Service Worker登録
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('ServiceWorker registration successful');
-            }).catch(function(err) {
-                console.log('ServiceWorker registration failed: ', err);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('test-sw.js')
+                    .then(reg => {
+                        updateDiagnostics('✅ Service Worker登録成功', 'success');
+                        console.log('SW registered:', reg);
+                    })
+                    .catch(err => {
+                        updateDiagnostics('❌ Service Worker登録失敗: ' + err, 'error');
+                        console.log('SW registration failed:', err);
+                    });
             });
+        } else {
+            updateDiagnostics('❌ Service Workerがサポートされていません', 'error');
         }
-
-        // インストールプロンプト
+        
+        // インストールプロンプトイベント
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('installButton').style.display = 'block';
+            document.getElementById('installBtn').style.display = 'block';
+            updateDiagnostics('✅ インストールプロンプトが利用可能', 'success');
         });
-
-        // アプリインストール
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    document.getElementById('installButton').style.display = 'none';
-                });
-            }
-        }
-
-        // ターゲットカードを生成
-        function generateTargetCards() {
-            targetCards = [];
-            
-            // 各属性の値を確実に含めるようにする
-            const colorsCopy = [...colors];
-            const shapesCopy = [...shapes];
-            const numbersCopy = [...numbers];
-            const bordersCopy = [...borders];
-            const sizesCopy = [...sizes];
-            
-            // 4枚のカードを生成（各属性の4つの値が1回ずつ使われる）
-            for (let i = 0; i < 4; i++) {
-                const card = {
-                    color: colorsCopy[i],
-                    shape: shapesCopy[i],
-                    number: numbersCopy[i],
-                    border: bordersCopy[i],
-                    size: sizesCopy[i % 3] // サイズは3種類なので循環
-                };
-                targetCards.push(card);
+        
+        // インストール済みイベント
+        window.addEventListener('appinstalled', () => {
+            updateDiagnostics('✅ アプリがインストールされました', 'success');
+            document.getElementById('installBtn').style.display = 'none';
+        });
+        
+        // インストール関数
+        function installPWA() {
+            if (!deferredPrompt) {
+                updateDiagnostics('❌ インストールプロンプトが利用できません', 'error');
+                return;
             }
             
-            // カードの順番をシャッフル
-            for (let i = targetCards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [targetCards[i], targetCards[j]] = [targetCards[j], targetCards[i]];
-            }
-        }
-
-        // ローカルストレージからハイスコアを読み込み
-        function loadHighScores() {
-            const saved = localStorage.getItem('wcstHighScores');
-            if (saved) {
-                highScores = JSON.parse(saved);
-            } else {
-                highScores = {
-                    30: { name: '-', score: 0 },
-                    60: { name: '-', score: 0 },
-                    180: { name: '-', score: 0 },
-                    300: { name: '-', score: 0 }
-                };
-            }
-        }
-
-        // ハイスコアを保存
-        function saveHighScores() {
-            localStorage.setItem('wcstHighScores', JSON.stringify(highScores));
-        }
-
-        // ハイスコア表示
-        function displayHighScores(elementId) {
-            const container = document.getElementById(elementId);
-            container.innerHTML = '';
-            
-            const times = [30, 60, 180, 300];
-            const labels = ['30秒', '1分', '3分', '5分'];
-            
-            times.forEach((time, index) => {
-                const entry = document.createElement('div');
-                entry.className = 'score-entry';
-                const scoreData = highScores[time] || { name: '-', score: 0 };
-                entry.innerHTML = `
-                    <span>${labels[index]}</span>
-                    <span>${scoreData.name}: ${scoreData.score}点</span>
-                `;
-                container.appendChild(entry);
-            });
-        }
-
-        // Web Audio APIで音を生成
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
-        // 正解音（高い音）
-        function playCorrectSound() {
-            if (!isSoundEnabled || !audioContext) return;
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.2);
-        }
-
-        // 不正解音（低い音）
-        function playIncorrectSound() {
-            if (!isSoundEnabled || !audioContext) return;
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        // 時間選択
-        function selectTime(seconds) {
-            selectedTime = seconds;
-            const options = document.querySelectorAll('.time-option');
-            options.forEach(option => option.classList.remove('selected'));
-            event.target.classList.add('selected');
-        }
-
-        // カードを表示する関数
-        function displayCard(card, element) {
-            element.innerHTML = '';
-            element.className = `card border-${card.border}`;
-            
-            // サイズラベルを追加
-            if (activeRules.includes('size')) {
-                const sizeLabel = document.createElement('div');
-                sizeLabel.className = 'size-label';
-                sizeLabel.textContent = sizeLabels[card.size];
-                element.appendChild(sizeLabel);
-            }
-            
-            for (let i = 0; i < card.number; i++) {
-                const shape = document.createElement('span');
-                shape.className = `shape size-${card.size}`;
-                shape.textContent = card.shape;
-                shape.style.color = card.color;
-                element.appendChild(shape);
-            }
-        }
-
-        // ターゲットカードを初期化
-        function initTargetCards() {
-            const container = document.getElementById('targetCards');
-            container.innerHTML = '';
-            
-            targetCards.forEach((card, index) => {
-                const cardElement = document.createElement('div');
-                cardElement.onclick = () => selectCard(index);
-                displayCard(card, cardElement);
-                container.appendChild(cardElement);
-            });
-        }
-
-        // ランダムなテストカードを生成
-        function generateTestCard() {
-            return {
-                color: colors[Math.floor(Math.random() * colors.length)],
-                shape: shapes[Math.floor(Math.random() * shapes.length)],
-                number: numbers[Math.floor(Math.random() * numbers.length)],
-                border: borders[Math.floor(Math.random() * borders.length)],
-                size: sizes[Math.floor(Math.random() * sizes.length)]
-            };
-        }
-
-        // 新しいテストカードを表示
-        function showNewTestCard() {
-            const testCard = generateTestCard();
-            const element = document.getElementById('testCard');
-            displayCard(testCard, element);
-            element.dataset.card = JSON.stringify(testCard);
-        }
-
-        // ポイント変化のアニメーション
-        function showPointChange(element, points) {
-            const pointDiv = document.createElement('div');
-            pointDiv.className = 'point-change';
-            pointDiv.textContent = points > 0 ? `+${points}` : points;
-            pointDiv.style.color = points > 0 ? '#4ade80' : '#f87171';
-            pointDiv.style.left = '50%';
-            pointDiv.style.top = '50%';
-            pointDiv.style.transform = 'translate(-50%, -50%)';
-            element.appendChild(pointDiv);
-            
-            setTimeout(() => pointDiv.remove(), 1000);
-        }
-
-        // カードが選択されたときの処理
-        function selectCard(index) {
-            const testCard = JSON.parse(document.getElementById('testCard').dataset.card);
-            const targetCard = targetCards[index];
-            
-            let isCorrect = false;
-            
-            // 現在のルールに基づいて正誤判定
-            if (testCard[currentRule] === targetCard[currentRule]) {
-                isCorrect = true;
-            }
-            
-            // フィードバック表示とスコア更新
-            const feedback = document.getElementById('feedback');
-            const cards = document.querySelectorAll('.target-cards > *');
-            
-            if (isCorrect) {
-                feedback.textContent = '正解！';
-                feedback.className = 'feedback correct';
-                score++;
-                correctCount++;
-                correctInCurrentRule++;
-                cards[index].classList.add('highlight-correct');
-                showPointChange(cards[index], 1);
-                playCorrectSound();
-            } else {
-                feedback.textContent = '不正解';
-                feedback.className = 'feedback incorrect';
-                score--;
-                incorrectCount++;
-                cards[index].classList.add('highlight-incorrect');
-                showPointChange(cards[index], -1);
-                playIncorrectSound();
-            }
-            
-            updateScore();
-            
-            // ハイライトを削除
-            setTimeout(() => {
-                cards[index].classList.remove('highlight-correct', 'highlight-incorrect');
-            }, 500);
-            
-            // ルール変更のチェック
-            if (correctInCurrentRule >= nextRuleChange) {
-                changeRule();
-            }
-            
-            setTimeout(() => {
-                feedback.textContent = '';
-                showNewTestCard();
-            }, 800);
-        }
-
-        // ルールを変更
-        function changeRule() {
-            const lastRule = currentRule;
-            do {
-                currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
-            } while (currentRule === lastRule && activeRules.length > 1);
-            
-            // 次のルール変更までの正解数をランダムに設定（1〜8回）
-            nextRuleChange = Math.floor(Math.random() * 8) + 1;
-            correctInCurrentRule = 0;
-        }
-
-        // スコアを更新
-        function updateScore() {
-            document.getElementById('score').textContent = score;
-        }
-
-        // タイマーを更新
-        function updateTimer() {
-            timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            document.getElementById('timeLeft').textContent = 
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
-            if (timeLeft <= 0) {
-                endGame();
-            }
-        }
-
-        // アクティブなルールを取得
-        function getActiveRules() {
-            activeRules = [];
-            if (document.getElementById('useColor').checked) activeRules.push('color');
-            if (document.getElementById('useShape').checked) activeRules.push('shape');
-            if (document.getElementById('useNumber').checked) activeRules.push('number');
-            if (document.getElementById('useBorder').checked) activeRules.push('border');
-            if (document.getElementById('useSize').checked) activeRules.push('size');
-            
-            if (activeRules.length === 0) {
-                alert('少なくとも1つの要素を選択してください');
-                return false;
-            }
-            return true;
-        }
-
-        // ゲーム開始
-        function startGame() {
-            if (!getActiveRules()) return;
-            
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            
-            // 音声の初期化
-            initAudio();
-            
-            // ターゲットカードを生成
-            generateTargetCards();
-            
-            // 初期化
-            score = 0;
-            correctCount = 0;
-            incorrectCount = 0;
-            timeLeft = selectedTime;
-            currentRule = activeRules[Math.floor(Math.random() * activeRules.length)];
-            nextRuleChange = Math.floor(Math.random() * 8) + 1;
-            correctInCurrentRule = 0;
-            
-            updateScore();
-            initTargetCards();
-            showNewTestCard();
-            
-            // タイマー開始
-            gameTimer = setInterval(updateTimer, 1000);
-        }
-
-        // ゲーム終了確認
-        function confirmEndGame() {
-            if (confirm('本当にゲームを終了しますか？')) {
-                endGame();
-            }
-        }
-
-        // ゲーム終了
-        function endGame() {
-            clearInterval(gameTimer);
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('gameOver').style.display = 'block';
-            
-            document.getElementById('finalScore').textContent = score;
-            document.getElementById('correctCount').textContent = correctCount;
-            document.getElementById('incorrectCount').textContent = incorrectCount;
-            
-            // ハイスコアチェック
-            const currentHighScore = highScores[selectedTime] || { score: 0 };
-            if (score > currentHighScore.score) {
-                document.getElementById('congratsMessage').style.display = 'block';
-                document.getElementById('nameInput').style.display = 'block';
-            } else {
-                document.getElementById('congratsMessage').style.display = 'none';
-                document.getElementById('nameInput').style.display = 'none';
-            }
-            
-            displayHighScores('scoreListEnd');
-        }
-
-        // ハイスコアを保存
-        function saveHighScore() {
-            const name = document.getElementById('playerName').value.trim() || '名無し';
-            highScores[selectedTime] = { name: name, score: score };
-            saveHighScores();
-            displayHighScores('scoreListEnd');
-            document.getElementById('nameInput').style.display = 'none';
-        }
-
-        // ゲームリセット
-        function resetGame() {
-            document.getElementById('gameOver').style.display = 'none';
-            document.getElementById('startScreen').style.display = 'block';
-            displayHighScores('scoreListStart');
-        }
-
-        // 音声のオン/オフ切り替え
-        function toggleSound() {
-            isSoundEnabled = !isSoundEnabled;
-            document.getElementById('soundToggle').textContent = isSoundEnabled ? '🔊' : '🔇';
-        }
-
-        // フルスクリーン切り替え
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((result) => {
+                if (result.outcome === 'accepted') {
+                    updateDiagnostics('✅ インストールが承認されました', 'success');
+                } else {
+                    updateDiagnostics('⚠️ インストールがキャンセルされました', 'error');
                 }
-            }
-        }
-
-        // 初期化
-        loadHighScores();
-        displayHighScores('scoreListStart');
-
-        // アプリとして実行されているかチェックして、フルスクリーンボタンを制御
-        if (isStandalone) {
-            document.getElementById('fullscreenBtn').style.display = 'none';
+                deferredPrompt = null;
+            });
         }
         
-        // ページ読み込み時に自動的にフルスクリーンを試みる（ブラウザの場合）
-        document.addEventListener('DOMContentLoaded', function() {
-            // インストールプロンプトの表示（ブラウザでアクセスした場合）
-            if (!isStandalone) {
-                // 少し遅延させて表示（ページ読み込み完了後）
-                setTimeout(() => {
-                    // 以前に閉じられていない場合のみ表示
-                    if (localStorage.getItem('installPromptDismissed') !== 'true') {
-                        document.getElementById('installPrompt').style.display = 'block';
-                    }
-                }, 2000);
+        // PWA状態チェック
+        function checkPWAStatus() {
+            diagnostics.innerHTML = '';
+            
+            // HTTPS確認
+            if (location.protocol === 'https:' || location.hostname === 'localhost') {
+                updateDiagnostics('✅ HTTPS/localhost接続', 'success');
+            } else {
+                updateDiagnostics('❌ HTTPSが必要です（現在: ' + location.protocol + '）', 'error');
             }
             
-            // モバイルデバイスで自動的にフルスクリーンを要求
-            if (!isStandalone && 'ontouchstart' in window) {
-                document.addEventListener('touchstart', function() {
-                    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('Fullscreen request failed:', err);
-                        });
+            // Service Worker確認
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg) {
+                        updateDiagnostics('✅ Service Worker登録済み', 'success');
+                    } else {
+                        updateDiagnostics('⚠️ Service Worker未登録', 'error');
                     }
-                }, { once: true });
+                });
             }
             
-            // デスクトップでもクリック時にフルスクリーン
-            if (!isStandalone) {
-                document.addEventListener('click', function() {
-                    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('Fullscreen request failed:', err);
-                        });
-                    }
-                }, { once: true });
+            // スタンドアロンモード確認
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                updateDiagnostics('✅ アプリモードで実行中', 'success');
+            } else {
+                updateDiagnostics('ℹ️ ブラウザモードで実行中', '');
             }
-        });
+            
+            // manifest確認
+            const manifestLink = document.querySelector('link[rel="manifest"]');
+            if (manifestLink) {
+                fetch(manifestLink.href)
+                    .then(response => {
+                        if (response.ok) {
+                            updateDiagnostics('✅ Manifestファイル読み込み成功', 'success');
+                        } else {
+                            updateDiagnostics('❌ Manifestファイル読み込み失敗', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        updateDiagnostics('❌ Manifestファイルにアクセスできません', 'error');
+                    });
+            }
+        }
+        
+        // 初期チェック
+        checkPWAStatus();
     </script>
 </body>
 </html>
