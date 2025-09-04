@@ -6,7 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>ウィスコンシンカードソーティングタスク</title>
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="FNT_color2.png">
+    <title>ウィスコンシンカードソーティングタスク - FNT</title>
     <style>
         * {
             margin: 0;
@@ -26,6 +29,70 @@
             color: white;
             padding: 10px;
             overflow-x: hidden;
+        }
+
+        /* スプラッシュスクリーン */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeOut 0.5s ease-in-out 2.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        .splash-content {
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .splash-logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            animation: logoScale 0.6s ease-in-out;
+        }
+
+        @keyframes logoScale {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .splash-title {
+            color: #2e3f7f;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .splash-subtitle {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .splash-copyright {
+            color: #999;
+            font-size: 12px;
+            position: absolute;
+            bottom: 30px;
         }
 
         .container {
@@ -425,9 +492,40 @@
             cursor: pointer;
             font-size: 20px;
         }
+
+        .install-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin: 10px auto;
+            width: 100%;
+            max-width: 250px;
+        }
+
+        .install-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
+    <!-- スプラッシュスクリーン -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-content">
+            <img src="FNT_color2.png" alt="FNT Logo" class="splash-logo">
+            <h1 class="splash-title">Functional Neuro Training</h1>
+            <p class="splash-subtitle">カードソーティングゲーム</p>
+        </div>
+        <p class="splash-copyright">© Functional Neuro Training. All Rights Reserved.</p>
+    </div>
+
     <div class="container">
         <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
         
@@ -436,6 +534,10 @@
                 <img src="FNT_color2.png" alt="Functional Neuro Training Logo" width="60" height="60" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
                 <h2>カードソーティングゲーム</h2>
             </div>
+            
+            <button class="install-button" id="installButton" onclick="installApp()">
+                📱 アプリをインストール
+            </button>
             
             <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; font-size: 13px; line-height: 1.6;">
                 <h3 style="margin-bottom: 10px; font-size: 16px;">ゲームのルール</h3>
@@ -583,6 +685,39 @@
 
         // ターゲットカード（動的に生成）
         let targetCards = [];
+
+        // PWA関連
+        let deferredPrompt;
+        
+        // Service Worker登録
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(registration) {
+                console.log('ServiceWorker registration successful');
+            }).catch(function(err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        }
+
+        // インストールプロンプト
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installButton').style.display = 'block';
+        });
+
+        // アプリインストール
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installButton').style.display = 'none';
+                });
+            }
+        }
 
         // ターゲットカードを生成
         function generateTargetCards() {
