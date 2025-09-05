@@ -1,42 +1,37 @@
-const CACHE_NAME = 'wcst-fnt-v7';
+const CACHE_NAME = 'wcst-fnt-v8';
 
-// GitHub Pagesでのベースパスを考慮
+// キャッシュするファイル
 const urlsToCache = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './FNT512.png',
+  './FNT512-transparent.png'
 ];
 
 self.addEventListener('install', function(event) {
-  // 新しいService Workerをすぐに有効化
-  self.skipWaiting();
-  
+  console.log('[ServiceWorker] Install');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
-        console.log('Opened cache');
+        console.log('[ServiceWorker] Caching app shell');
         return cache.addAll(urlsToCache);
-      })
-      .catch(function(error) {
-        console.error('Failed to cache:', error);
       })
   );
 });
 
 self.addEventListener('activate', function(event) {
-  // 古いキャッシュを削除
+  console.log('[ServiceWorker] Activate');
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.filter(function(cacheName) {
-          return cacheName !== CACHE_NAME;
-        }).map(function(cacheName) {
-          return caches.delete(cacheName);
-        })
-      );
+    caches.keys().then(function(keyList) {
+      return Promise.all(keyList.map(function(key) {
+        if (key !== CACHE_NAME) {
+          console.log('[ServiceWorker] Removing old cache', key);
+          return caches.delete(key);
+        }
+      }));
     })
   );
-  // すぐにクライアントを制御
   return self.clients.claim();
 });
 
@@ -44,10 +39,7 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
+        return response || fetch(event.request);
       })
   );
 });
