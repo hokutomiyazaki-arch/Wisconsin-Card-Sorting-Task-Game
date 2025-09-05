@@ -1,10 +1,10 @@
-const CACHE_NAME = 'wcst-fnt-v5';
+const CACHE_NAME = 'wcst-fnt-v6';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/FNT512.png',
-  '/FNT512-transparent.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './FNT512.png',
+  './FNT512-transparent.png'
 ];
 
 self.addEventListener('install', (event) => {
