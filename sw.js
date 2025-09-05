@@ -70,7 +70,7 @@ self.addEventListener('fetch', event => {
       .catch(() => {
         // オフライン時のフォールバック
         if (event.request.destination === 'document') {
-          return caches.match('./index.html');
+          return caches.match('https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/index.html');
         }
       })
   );
