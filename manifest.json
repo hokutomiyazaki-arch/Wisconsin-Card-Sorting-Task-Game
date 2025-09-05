@@ -2,71 +2,71 @@
   "name": "ウィスコンシンカードソーティングタスク - FNT",
   "short_name": "WCST Training",
   "description": "認知的柔軟性とセットシフティング能力を鍛える神経科学的トレーニングアプリ",
-  "start_url": "./index.html",
+  "start_url": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#667eea",
-  "scope": "./",
+  "scope": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/",
   "icons": [
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "180x180",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "152x152",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "120x120",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "114x114",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "96x96",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "76x76",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "60x60",
       "type": "image/png"
     },
     {
-      "src": "FNT512.png",
+      "src": "https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png",
       "sizes": "57x57",
       "type": "image/png"
     }
