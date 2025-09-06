@@ -13,11 +13,11 @@
     <meta name="apple-mobile-web-app-title" content="WCST Training">
     
     <!-- アイコン設定 -->
-    <link rel="icon" href="FNT512.png" type="image/png">
-    <link rel="apple-touch-icon" href="FNT512.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="FNT512.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="FNT512.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="FNT512.png">
+    <link rel="icon" href="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png" type="image/png">
+    <link rel="apple-touch-icon" href="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png">
     
     <!-- マニフェスト -->
     <link rel="manifest" href="manifest.json">
@@ -147,7 +147,6 @@
         .header-logo {
             width: 40px;
             height: 40px;
-            background: white;
             padding: 5px;
             border-radius: 8px;
         }
@@ -603,7 +602,7 @@
 <body>
     <!-- スプラッシュスクリーン -->
     <div class="splash-screen" id="splashScreen">
-        <img src="FNT512.png" alt="FNT Logo" class="splash-logo">
+        <img src="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512.png" alt="FNT Logo" class="splash-logo">
         <div class="splash-title">Functional Neuro Training</div>
         <div class="splash-app-name">ウィスコンシンカードソーティングタスク</div>
         <div class="splash-copyright">© Functional Neuro Training.<br>All Rights Reserved.</div>
@@ -634,15 +633,11 @@
             <button onclick="toggleSound()" style="width: 100%; margin: 10px 0;">
                 音声: <span id="soundStatus">ON</span>
             </button>
-            
-            <button onclick="toggleFullscreen()" style="width: 100%; margin: 10px 0;">
-                全画面表示
-            </button>
         </div>
         
         <div id="startScreen" class="start-screen">
             <div class="header">
-                <img src="FNT512-transparent.png" alt="FNT" class="header-logo">
+                <img src="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512-transparent.png" alt="FNT" class="header-logo">
                 <h1>カードソーティングタスク</h1>
             </div>
             
@@ -690,7 +685,7 @@
 
         <div id="gameScreen" style="display: none;">
             <div class="header">
-                <img src="FNT512-transparent.png" alt="FNT" class="header-logo">
+                <img src="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512-transparent.png" alt="FNT" class="header-logo">
                 <h1>カードソーティングタスク</h1>
             </div>
             
@@ -716,7 +711,7 @@
 
         <div id="gameOver" style="display: none;">
             <div class="header">
-                <img src="FNT512-transparent.png" alt="FNT" class="header-logo">
+                <img src="https://hokutomiyazaki-arch.github.io/Wisconsin-Card-Sorting-Task-Game/FNT512-transparent.png" alt="FNT" class="header-logo">
                 <h1>カードソーティングタスク</h1>
             </div>
             
@@ -754,8 +749,15 @@
     </div>
 
     <script>
-        // スプラッシュスクリーンの表示
+        // スプラッシュスクリーンの表示と全画面化
         window.addEventListener('load', function() {
+            // 全画面表示を自動的に試みる
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Auto fullscreen failed:', err);
+                });
+            }
+            
             setTimeout(function() {
                 document.getElementById('splashScreen').classList.add('fade-out');
                 setTimeout(function() {
@@ -763,6 +765,15 @@
                 }, 500);
             }, 2000);
         });
+
+        // ユーザーの最初のインタラクションで全画面化
+        document.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            }
+        }, { once: true });
 
         // カードの属性
         const colors = ['red', 'green', 'blue', 'yellow'];
@@ -1079,6 +1090,13 @@
         function startGame() {
             if (!getActiveRules()) return;
             
+            // 全画面表示を確実に実行
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log('Fullscreen request failed:', err);
+                });
+            }
+            
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
             
@@ -1142,19 +1160,6 @@
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('startScreen').style.display = 'block';
             displayHighScores('scoreListStart');
-        }
-
-        // フルスクリーン切り替え
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log('Fullscreen request failed:', err);
-                });
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
         }
 
         // 初期化
